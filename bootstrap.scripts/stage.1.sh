@@ -2,6 +2,7 @@ sudo yum -y update                          \
 &&   sudo yum -y install epel-release            \
 &&   sudo yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm \
 &&   sudo yum -y install centos-release-scl      \
+&&   sudo yum -y remove  git                     \
 &&   sudo yum -y install devtoolset-8            \
                     double-conversion-devel \
                     jemalloc-devel          \
@@ -17,4 +18,7 @@ sudo yum -y update                          \
                     bzip2-devel             \
                     openssl-devel           \
                     python3                 \
-                    wget                    ; sudo yum clean all  
+                    wget                    \
+                    git                     \
+&&   sudo yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
+&&   sudo yum -y install postgresql-devel  ; sudo yum clean all  
