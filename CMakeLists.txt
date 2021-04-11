@@ -11,7 +11,9 @@ SET (__WITH_BOOST OFF)
 SET (__WITH_PROXYGEN OFF)
 SET (__WITH_PQXX OFF)
 
-SET(BUILD_PROXYGEN ON)
+SET(LOAD_BOOST_SOURCES ON)
+SET(LOAD_PROXYGEN_SOURCES ON)
+SET(LOAD_PQXX_SOURCES ON)
 
 
 # ********************** Boost *********************
@@ -25,8 +27,8 @@ if (${LOAD_BOOST_SOURCES})
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX}
 		URL https://dl.bintray.com/boostorg/release/${V_BOOST}/source/${BOOST_PREFIX}_${V_BOOST_}.tar.gz
 		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./bootstrap.sh"
-		BUILD_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./b2 -j4 -d1 --without-python --without-graph_parallel --without-mpi --prefix=/usr/local install"
-		INSTALL_COMMAND ""
+		BUILD_COMMAND ""
+		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./b2 -j4 -d1 --without-python --without-graph_parallel --without-mpi --prefix=/usr/local install"
 	)
 	SET (__WITH_BOOST ON)
 elseif (${BUILD_BOOST})
@@ -34,8 +36,8 @@ elseif (${BUILD_BOOST})
 		PREFIX ${BOOST_PREFIX}
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX}
 		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./bootstrap.sh"
-		BUILD_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./b2 -j4 -d1 --without-python --without-graph_parallel --without-mpi --prefix=/usr/local install"
-		INSTALL_COMMAND ""
+		BUILD_COMMAND ""
+		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./b2 -j4 -d1 --without-python --without-graph_parallel --without-mpi --prefix=/usr/local install"
 	SET (__WITH_BOOST ON)
 	)
 endif()
@@ -51,8 +53,8 @@ if (${LOAD_PROXYGEN_SOURCES})
 		URL https://github.com/facebook/proxygen/archive/v${V_PROXYGEN}.tar.gz 
 		PATCH_COMMAND sed s/\-DCMAKE_INSTALL_PREFIX=\"\$DEPS_DIR\"/\-DCMAKE_INSTALL_PREFIX=\"\$PREFIX\"/ < ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/build.sh > ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/b.sh 
 		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && chmod +x b.sh && ./b.sh -j 4 --prefix /usr/local"
-		BUILD_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && ./install.sh"
-		INSTALL_COMMAND ""
+		BUILD_COMMAND ""
+		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && ./install.sh"
 	)
 	SET (__WITH_PROXYGEN ON)
 elseif (${BUILD_PROXYGEN})
@@ -61,8 +63,8 @@ elseif (${BUILD_PROXYGEN})
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}
 		PATCH_COMMAND sed s/\-DCMAKE_INSTALL_PREFIX=\"\$DEPS_DIR\"/\-DCMAKE_INSTALL_PREFIX=\"\$PREFIX\"/ < ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/build.sh > ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/b.sh 
 		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && chmod +x b.sh && ./b.sh -j 4 --prefix /usr/local"
-		BUILD_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && ./install.sh"
-		INSTALL_COMMAND ""
+		BUILD_COMMAND ""
+		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && ./install.sh"
 	)
 	SET (__WITH_PROXYGEN ON)
 endif()
@@ -77,8 +79,8 @@ if (${LOAD_PQXX_SOURCES})
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}
 		URL https://github.com/jtv/libpqxx/archive/${V_PQXX}.tar.gz
 		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX} && mkdir -p release && cd release && cmake ../"
-		BUILD_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
-		INSTALL_COMMAND ""
+		BUILD_COMMAND ""
+		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
 	)
 	SET (__WITH_PQXX ON)
 elseif (${BUILD_PQXX})
@@ -86,8 +88,8 @@ elseif (${BUILD_PQXX})
 		PREFIX ${PQXX_PREFIX}
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}
 		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX} && mkdir -p release && cd release && cmake ../"
-		BUILD_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
-		INSTALL_COMMAND ""
+		BUILD_COMMAND ""
+		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
 	SET (__WITH_PQXX ON)
 	)
 endif()

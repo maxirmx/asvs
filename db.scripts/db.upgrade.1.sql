@@ -1,3 +1,7 @@
+-- Authentication and Verification Server
+-- Upgrade #1 script (no comments)
+
+
 ALTER TABLE public.sp_customers
     ADD CONSTRAINT sp_customers_pkey PRIMARY KEY (sp_customer_uuid);
 
