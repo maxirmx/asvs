@@ -32,13 +32,13 @@ int main(int argc, char* argv[])
   if (FLAGS_postgres.empty())
       LOG(INFO) << "Database connection string has not been provided. We will try defaults but the result can be disappointing." << std::endl;
   
-  shared_ptr<DbConnection> db_controller;
-
-  try 
+   try 
   {
-      db_controller = make_shared<DbConnection>(FLAGS_postgres);
-      LOG(INFO) << db_controller->describe();
-  }
+      DbConnection::d = make_unique<DbConnection>(FLAGS_postgres);
+      LOG(INFO) << DbConnection::d->describe();
+      unique_ptr<DbInMemory> m = make_unique<DbInMemory>();
+      m->loadDb();
+   }
   catch (const pqxx::pqxx_exception& e)
   {
       if (FLAGS_postgres.empty())
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
   prov_api_options.enableContentCompression = false;
   prov_api_options.handlerFactories =
       RequestHandlerChain()
-      .addThen<ProvApiHandlerFactory>(db_controller)
+      .addThen<ProvApiHandlerFactory>()
       .build();
   // Increase the default flow control to 1MB/10MB
   prov_api_options.initialReceiveWindow = uint32_t(1 << 20);
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
   asvs_api_options.enableContentCompression = false;
   asvs_api_options.handlerFactories =
       RequestHandlerChain()
-      .addThen<AsVsApiHandlerFactory>(db_controller)
+      .addThen<AsVsApiHandlerFactory>()
       .build();
   // Increase the default flow control to 1MB/10MB
   asvs_api_options.initialReceiveWindow = uint32_t(1 << 20);

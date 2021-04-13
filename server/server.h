@@ -29,5 +29,7 @@
 #include <pqxx/pqxx>
 
 #include "Util.h"
+#include "CustomerDb.h"
+#include "AccountDb.h"
 #include "DbConnection.h"
 

@@ -4,8 +4,6 @@ using namespace std;
 using namespace folly;
 using namespace proxygen;
 
-#include "CustomerDb.h"
-#include "AccountDb.h"
 #include "ProvisioningAPI.h"
 
 
@@ -18,33 +16,6 @@ void ProvApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
         VLOG(1) << "[Provisioning API request] " << path << endl;
 
         waiting_post = true;
-
-        /*
-        if (path == "/api/remap") 
-        {
-         //   this->Remap();
-        }
-        else if (   path == "/api/customer_create"      ||
-                    path == "/api/customer_update"      ||
-                    path == "/api/customer_delete"      || 
-                    path == "/api/customer_ip_create"   ||
-                    path == "/api/customer_ip_update"   ||
-                    path == "/api/customer_ip_delete"   ||
-                    path == "/api/account_create"       ||
-                    path == "/api/account_update"       ||
-                    path == "/api/account_delete"       ||
-                    path == "/api/gateway_ip_create"    ||
-                    path == "/api/gateway_ip_update"    ||
-                    path == "/api/gateway_ip_delete"    ||
-                    path == "/api/cert_create"          ||
-                    path == "/api/cert_update"          ||
-                    path == "/api/cert_delete"          ||
-                    path == "/api/tn_create"            ||
-                    path == "/api/tn_update"            ||
-                    path == "/api/tn_delete"            ) waiting_post = true;
-        else
-            logError(404, "Not Found", "API does not exist: " + path);
-            */
     }
     catch (const std::exception& e)
     {
@@ -102,10 +73,15 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
     {
         logError(400, "Bad Request", e.what());
     }
-    catch (const std::exception& e)
+    catch (const pqxx::pqxx_exception& e)
+    {
+        logError(400, "Bad Request", e.base().what());
+    }
+        catch (const std::exception& e)
     {
         logError(500, "Internal Server Error", e.what());
     }
+
 
 }
 
@@ -152,107 +128,107 @@ void ProvApiHandler::logError(uint16_t code, const string& reason, const string&
 
 string ProvApiHandler::customerCreate(const string& body)
 {
-    spCustomerInfo spCInfo(body, db_connection);
+    spCustomerInfo spCInfo(body);
     return spCInfo.__insert();
 }
 
 string ProvApiHandler::customerUpdate(const string& body)
 {
-    spCustomerInfo spCInfo(body, db_connection);
+    spCustomerInfo spCInfo(body);
     return spCInfo.__update();
 }
 
 string ProvApiHandler::customerDelete(const string& body)
 {
-    spCustomerInfo spCInfo(body, db_connection);
+    spCustomerInfo spCInfo(body);
     return spCInfo.__delete();   
 }
 string ProvApiHandler::customerIpCreate(const string& body)
 {
-    spCustomerIpInfo spIpInfo(body, db_connection);
+    spCustomerIpInfo spIpInfo(body);
     return spIpInfo.__insert();
 }
 
 string ProvApiHandler::customerIpUpdate(const string& body)
 {
-    spCustomerIpInfo spIpInfo(body, db_connection);
+    spCustomerIpInfo spIpInfo(body);
     return spIpInfo.__update();
 }
 
 string ProvApiHandler::customerIpDelete(const string& body)
 {
-    spCustomerIpInfo spIpInfo(body, db_connection);
+    spCustomerIpInfo spIpInfo(body);
     return spIpInfo.__delete();
 }
 
 string ProvApiHandler::accountCreate(const string& body)
 {
-    spAccountInfo spAccInfo(body, db_connection);
+    spAccountInfo spAccInfo(body);
     return spAccInfo.__insert();
 }
 
 string ProvApiHandler::accountUpdate(const string& body)
 {
-    spAccountInfo spAccInfo(body, db_connection);
+    spAccountInfo spAccInfo(body);
     return spAccInfo.__update();
 }
 
 string ProvApiHandler::accountDelete(const string& body)
 {
-    spAccountInfo spAccInfo(body, db_connection);
+    spAccountInfo spAccInfo(body);
     return spAccInfo.__delete();
 }
 
 string ProvApiHandler::gatewayIpCreate(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body, db_connection);
+    spGatewayIpInfo spIpInfo(body);
     return spIpInfo.__insert();
 }
 
 string ProvApiHandler::gatewayIpUpdate(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body, db_connection);
+    spGatewayIpInfo spIpInfo(body);
     return spIpInfo.__update();
 }
 
 string ProvApiHandler::gatewayIpDelete(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body, db_connection);
+    spGatewayIpInfo spIpInfo(body);
     return spIpInfo.__delete();
 }
 
 string ProvApiHandler::certCreate(const string& body)
 {
-    spCertInfo spCInfo(body, db_connection);
+    spCertInfo spCInfo(body);
     return spCInfo.__insert();
 }
 
 string ProvApiHandler::certUpdate(const string& body)
 {
-    spCertInfo spCInfo(body, db_connection);
+    spCertInfo spCInfo(body);
     return spCInfo.__update();
 }
 
 string ProvApiHandler::certDelete(const string& body)
 {
-    spCertInfo spCInfo(body, db_connection);
+    spCertInfo spCInfo(body);
     return spCInfo.__delete();
 }
 
 string ProvApiHandler::tnCreate(const string& body)
 {
-    spTnInfo spTInfo(body, db_connection);
+    spTnInfo spTInfo(body);
     return spTInfo.__insert();
 }
 
 string ProvApiHandler::tnUpdate(const string& body)
 {
-    spTnInfo spTInfo(body, db_connection);
+    spTnInfo spTInfo(body);
     return spTInfo.__update();
 }
 
 string ProvApiHandler::tnDelete(const string& body)
 {
-    spTnInfo spTInfo(body, db_connection);
+    spTnInfo spTInfo(body);
     return spTInfo.__delete();
 }

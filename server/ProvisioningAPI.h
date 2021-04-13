@@ -2,7 +2,7 @@
 class ProvApiHandler : public RequestHandler
 {
 public:
-    explicit ProvApiHandler(shared_ptr<DbConnection> dbc) : db_connection(dbc), waiting_post(false) { }
+    explicit ProvApiHandler() : waiting_post(false) { }
     void onRequest(unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
     void onBody(unique_ptr<folly::IOBuf> body) noexcept override;
     void onEOM() noexcept override;
@@ -33,7 +33,6 @@ private:
     string tnDelete           (const string& body);
 
 
-    shared_ptr<DbConnection> db_connection;
     unique_ptr<HTTPMessage> message;
     bool waiting_post;
 };
@@ -41,13 +40,13 @@ private:
 class ProvApiHandlerFactory : public RequestHandlerFactory 
 {
 public:
-     ProvApiHandlerFactory(shared_ptr<DbConnection> dbc): db_connection(dbc) {   }
+     ProvApiHandlerFactory( void)  {   }
 
      void onServerStart(folly::EventBase* /*evb*/) noexcept override                 {   }
      void onServerStop() noexcept override                                           {   }
 
-     RequestHandler* onRequest(RequestHandler*, HTTPMessage*) noexcept override { return new ProvApiHandler(db_connection); }
+     RequestHandler* onRequest(RequestHandler*, HTTPMessage*) noexcept override { return new ProvApiHandler(); }
 
 private:
-     shared_ptr<DbConnection> db_connection;
+     
 };

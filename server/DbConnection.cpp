@@ -2,10 +2,11 @@
 
 using namespace std;
 
+std::unique_ptr<DbConnection> DbConnection::d;
 
 DbConnection::DbConnection(string postgr) : postgres(postgr)
 {
-	c = make_shared<pqxx::connection>(postgres);
+	c = make_unique<pqxx::connection>(postgres);
 }
 
 pqxx::result DbConnection::exec(string stmt)
@@ -32,5 +33,31 @@ string DbConnection::describe(void)
 	return descr.str();
 }
 
+void DbInMemory::loadDb(void)
+{
+	pqxx::result r = DbConnection::d->exec("SELECT * FROM sp_customers");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spCustomerInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_customers.";
+
+	r = DbConnection::d->exec("SELECT * FROM sp_customer_ip");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spCustomerIpInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_customer_ip.";
+
+	r = DbConnection::d->exec("SELECT * FROM sp_accounts");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spAccountInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_accounts.";
+
+	r = DbConnection::d->exec("SELECT * FROM sp_gateway_ip");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spGatewayIpInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_gateway_ip.";
+
+	r = DbConnection::d->exec("SELECT * FROM sp_tn");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spTnInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_tn.";
+
+//	r = DbConnection::d->exec("SELECT * FROM sp_cert");
+//	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spCertInfo>(row); }
+//	LOG(INFO) << "Loaded " << r.size() << " records from sp_cert.";
+}
 
 

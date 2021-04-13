@@ -4,8 +4,6 @@ using namespace std;
 using namespace folly;
 using namespace proxygen;
 
-#include "CustomerDb.h"
-#include "AccountDb.h"
 #include "AsVsHttpAPI.h"
 
 

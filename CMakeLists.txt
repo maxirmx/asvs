@@ -11,15 +11,18 @@ SET (__WITH_BOOST OFF)
 SET (__WITH_PROXYGEN OFF)
 SET (__WITH_PQXX OFF)
 
-SET(LOAD_BOOST_SOURCES ON)
-SET(LOAD_PROXYGEN_SOURCES ON)
-SET(LOAD_PQXX_SOURCES ON)
+SET(LOAD_BOOST_SOURCES OFF)
+SET(LOAD_PROXYGEN_SOURCES OFF)
+SET(LOAD_PQXX_SOURCES OFF)
 
+SET(BUILD_BOOST OFF)
+SET(BUILD_PROXYGEN OFF)
+SET(BUILD_PQXX OFF)
 
 # ********************** Boost *********************
-	set(V_BOOST 1.74.0)
-	set(V_BOOST_ 1_74_0)
-	set(BOOST_PREFIX boost)
+SET(V_BOOST 1.74.0)
+SET(V_BOOST_ 1_74_0)
+SET(BOOST_PREFIX boost)
 
 if (${LOAD_BOOST_SOURCES})
 	ExternalProject_Add(boost
@@ -43,8 +46,8 @@ elseif (${BUILD_BOOST})
 endif()
 
 # ********************** Proxygen *********************
-	set(V_PROXYGEN 2020.11.16.00)
-	set(PROXYGEN_PREFIX proxygen)
+SET(V_PROXYGEN 2020.11.16.00)
+SET(PROXYGEN_PREFIX proxygen)
 
 if (${LOAD_PROXYGEN_SOURCES})
 	ExternalProject_Add(proxygen
@@ -70,10 +73,14 @@ elseif (${BUILD_PROXYGEN})
 endif()
 
 # ********************** PQXX *********************
-	set(V_PQXX 6.4.5)
-	set(PQXX_PREFIX pqxx)
+SET(V_PQXX 6.4.5)
+SET(PQXX_PREFIX pqxx)
 
-if (${LOAD_PQXX_SOURCES})
+find_library(PQXX pqxx)
+
+if (${PQXX} STREQUAL "PQXX-NOTFOUND")
+
+#if (${LOAD_PQXX_SOURCES})
 	ExternalProject_Add(pqxx
 		PREFIX ${PQXX_PREFIX}
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}
@@ -83,15 +90,17 @@ if (${LOAD_PQXX_SOURCES})
 		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
 	)
 	SET (__WITH_PQXX ON)
-elseif (${BUILD_PQXX})
-	ExternalProject_Add(pqxx
-		PREFIX ${PQXX_PREFIX}
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}
-		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX} && mkdir -p release && cd release && cmake ../"
-		BUILD_COMMAND ""
-		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
-	SET (__WITH_PQXX ON)
-	)
+	SET (PQXX /usr/local/lib64/libpqxx.a)
+
+#elseif (${BUILD_PQXX})
+#	ExternalProject_Add(pqxx
+#		PREFIX ${PQXX_PREFIX}
+#		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}
+#		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX} && mkdir -p release && cd release && cmake ../"
+#		BUILD_COMMAND ""
+#		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
+#	SET (__WITH_PQXX ON)
+#	)
 endif()
 
 add_subdirectory ("server")

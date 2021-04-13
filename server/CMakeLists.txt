@@ -17,7 +17,6 @@ link_directories(/usr/local/lib)
 find_package( Boost 1.74 COMPONENTS context             REQUIRED ) 
 find_package( Threads                                   REQUIRED )
 
-
 find_library(Z                  z                       REQUIRED )
 find_library(SSL                ssl                     REQUIRED )
 find_library(CRYPTO             crypto                  REQUIRED )
@@ -43,7 +42,7 @@ find_library(FOLLY              folly                   REQUIRED )
 find_library(FIZZ               fizz                    REQUIRED )
 
 find_library(PQ                 pq                      REQUIRED )
-find_library(PQXX               pqxx                    REQUIRED )
+find_library(PQXX 		pqxx			REQUIRED )
 
 set(LIBS
         ${Boost_LIBRARIES}

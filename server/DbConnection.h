@@ -5,19 +5,23 @@ public:
     pqxx::result exec(std::string stmt);
     std::string describe(void);
 
-    std::shared_ptr<pqxx::connection> c;
+    std::unique_ptr<pqxx::connection> c;
+    static std::unique_ptr<DbConnection> d;
 private:
     std::string postgres;
 };
 
-/*class DbMemory
+class DbInMemory
 {
-    std::unordered_map<std::string, spCustomerInfo> cuMap;
-    std::unordered_map<std::string, spCustomerIPInfo> cuIpMap;
-    std::unordered_map<std::string, spAccountInfo> acMap;
-    std::unordered_map<std::string, spGatewayIpInfo> gwIpMap;
-    std::unordered_map<std::string, spTnInfo> tnMap;
-    std::unordered_map<std::string, spCertInfo> crMap;
+public:
+    void loadDb(void);
+
+
+    std::unordered_map<std::string, std::shared_ptr<spCustomerInfo>> cuMap;
+    std::unordered_map<std::string, std::shared_ptr<spCustomerIpInfo>> cuIpMap;
+    std::unordered_map<std::string, std::shared_ptr<spAccountInfo>> acMap;
+    std::unordered_map<std::string, std::shared_ptr<spGatewayIpInfo>> gwIpMap;
+    std::unordered_map<std::string, std::shared_ptr<spTnInfo>> tnMap;
+    std::unordered_map<std::string, std::shared_ptr<spCertInfo>> crMap;
 };
 
-*/
