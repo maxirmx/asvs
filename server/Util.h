@@ -11,6 +11,17 @@ protected:
     std::string msg;
 };
 
+
+class InternalError : public std::exception
+{
+public:
+    explicit InternalError(const std::string & message) : std::exception(), msg(message) {  }
+    virtual ~InternalError() noexcept {}
+    virtual const char* what() const noexcept { return msg.c_str(); }
+protected:
+    std::string msg;
+};
+
 inline std::chrono::system_clock::time_point str2time(const std::string& s)
 {
     using namespace boost::posix_time;

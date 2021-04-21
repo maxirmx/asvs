@@ -116,6 +116,7 @@ if (${__WITH_PROXYGEN})
 	add_dependencies(server proxygen)
 endif()
 
+
 if (${__WITH_PQXX})
 	add_dependencies(server pqxx)
 endif()

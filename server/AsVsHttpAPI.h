@@ -1,7 +1,7 @@
 class AsVsApiHandler : public RequestHandler
 {
 public:
-    explicit AsVsApiHandler()  { }
+    explicit AsVsApiHandler(): XRequestID(""), waiting_post(false) {  }
     void onRequest(unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
     void onBody(unique_ptr<folly::IOBuf> body) noexcept override;
     void onEOM() noexcept override;
@@ -10,9 +10,22 @@ public:
     void onError(ProxygenError err) noexcept override;
 
 private:
-    void logError(uint16_t code, const string& reason, const string& msg);
 
-    unique_ptr<HTTPMessage> message;
+    static uint16_t    AsVsCode2HttpCode(uint16_t AsVsCode);
+    static const std::string AsVsCode2AsVsId(uint16_t AsVsCode);
+    static const std::string AsVsCode2AsVsText(uint16_t AsVsCode);
+    static const std::string AsVsCode2AsVsExceptionKey(uint16_t AsVsCode);
+
+    void yeildResponse(const std::string& r);
+    void yeildError(uint16_t AsVsCode, const std::string& msg, const std::string& p1 = "", const std::string& p2 = "");
+
+    const std::string signing(const std::string& body);
+    const std::string verify(const std::string& body);
+
+    std::unique_ptr<HTTPMessage> message;
+    std::string XRequestID;
+    boost::uuids::random_generator generator;
+
     bool waiting_post;
 };
 
@@ -26,6 +39,4 @@ public:
 
     RequestHandler* onRequest(RequestHandler*, HTTPMessage*) noexcept override { return new AsVsApiHandler(); }
 
-private:
-    shared_ptr<DbConnection> db_connection;
 };

@@ -36,8 +36,8 @@ int main(int argc, char* argv[])
   {
       DbConnection::d = make_unique<DbConnection>(FLAGS_postgres);
       LOG(INFO) << DbConnection::d->describe();
-      unique_ptr<DbInMemory> m = make_unique<DbInMemory>();
-      m->loadDb();
+//      unique_ptr<DbInMemory> m = make_unique<DbInMemory>();
+//      m->loadDb();
    }
   catch (const pqxx::pqxx_exception& e)
   {
@@ -46,7 +46,15 @@ int main(int argc, char* argv[])
       else
           LOG(ERROR) << "Database connection defined by --postgres \"" << FLAGS_postgres << "\" failed." << endl;
       LOG(ERROR) << "The engine said:" << endl << e.base().what() << endl;
-      LOG(ERROR) << "If it complained about __db_schema_version, you had connected to the wrong schema.";
+      return -1;
+  }
+  catch (InternalError& e)
+  {
+      if (FLAGS_postgres.empty())
+          LOG(ERROR) << "Database connection using default parameters failed." << endl;
+      else
+          LOG(ERROR) << "Database connection defined by --postgres \"" << FLAGS_postgres << "\" failed." << endl;
+      LOG(ERROR) << e.what() << endl;
       return -1;
   }
 

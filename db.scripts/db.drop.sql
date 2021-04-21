@@ -1,11 +1,12 @@
 -- Authentication and Verification Server
 -- Database destruction script
 
-DROP TABLE cert;
-DROP TABLE sp_customer_ip;
-DROP TABLE sp_customers;
-DROP TABLE sp_gateway_ip;
-DROP TABLE sp_tn;
-DROP TABLE sp_cert;
-DROP TABLE sp_accounts;
-DROP TABLE __db_schema_version;
+DROP TABLE IF EXISTS sp_customer_ip;
+DROP TABLE IF EXISTS sp_customers;
+DROP TABLE IF EXISTS sp_as_gateway_ip;
+DROP TABLE IF EXISTS sp_vs_gateway_ip;
+DROP TABLE IF EXISTS sp_tn;
+DROP TABLE IF EXISTS sp_cert;
+DROP TABLE IF EXISTS sp_accounts;
+DROP TYPE IF EXISTS att_level;
+DROP TABLE IF EXISTS __db_schema_version;

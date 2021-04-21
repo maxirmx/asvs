@@ -28,10 +28,29 @@ string DbConnection::describe(void)
 	
 	pqxx::result version = exec("SELECT version_number FROM __db_schema_version ORDER BY version_number DESC LIMIT 1");
 
-	descr << "  Schema version:" << version[0][0].as<int>();
+	if (version.size() == 0) throw(InternalError("Schema version unknown. Most likely this is the wrong host or schema."));
+	else                 	 descr << "  Schema version:" << version[0][0].as<int>();
 
 	return descr.str();
 }
+
+
+class DbInMemory
+{
+public:
+	void loadDb(void);
+
+
+	std::unordered_map<std::string, std::shared_ptr<spCustomerInfo>> cuMap;
+	std::unordered_map<std::string, std::shared_ptr<spCustomerIpInfo>> cuIpMap;
+	std::unordered_map<std::string, std::shared_ptr<spAccountInfo>> acMap;
+	std::unordered_map<std::string, std::shared_ptr<spAsGatewayIpInfo>> gwAsIpMap;
+	std::unordered_map<std::string, std::shared_ptr<spVsGatewayIpInfo>> gwVsIpMap;
+	std::unordered_map<std::string, std::shared_ptr<spTnInfo>> tnMap;
+	std::unordered_map<std::string, std::shared_ptr<spCertInfo>> crMap;
+};
+
+
 
 void DbInMemory::loadDb(void)
 {
@@ -47,17 +66,21 @@ void DbInMemory::loadDb(void)
 	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spAccountInfo>(row); }
 	LOG(INFO) << "Loaded " << r.size() << " records from sp_accounts.";
 
-	r = DbConnection::d->exec("SELECT * FROM sp_gateway_ip");
-	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spGatewayIpInfo>(row); }
-	LOG(INFO) << "Loaded " << r.size() << " records from sp_gateway_ip.";
+	r = DbConnection::d->exec("SELECT * FROM sp_as_gateway_ip");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spAsGatewayIpInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_as_gateway_ip.";
+
+	r = DbConnection::d->exec("SELECT * FROM sp_vs_gateway_ip");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spVsGatewayIpInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_vs_gateway_ip.";
 
 	r = DbConnection::d->exec("SELECT * FROM sp_tn");
 	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spTnInfo>(row); }
 	LOG(INFO) << "Loaded " << r.size() << " records from sp_tn.";
 
-//	r = DbConnection::d->exec("SELECT * FROM sp_cert");
-//	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spCertInfo>(row); }
-//	LOG(INFO) << "Loaded " << r.size() << " records from sp_cert.";
+	r = DbConnection::d->exec("SELECT * FROM sp_cert");
+	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spCertInfo>(row); }
+	LOG(INFO) << "Loaded " << r.size() << " records from sp_cert.";
 }
 
 

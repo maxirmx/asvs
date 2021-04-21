@@ -76,6 +76,6 @@ set(LIBS
         ${ZSTD}
 )
 
-add_executable (${PROJECT_NAME} "server.cpp" "server.h" "ProvisioningAPI.cpp" "ProvisioningAPI.h" "CustomerDb.h" "CustomerDb.cpp" "AccountDb.cpp" "AccountDb.h" "AsVsHttpAPI.cpp" "Util.h" "DbConnection.h" "DbConnection.cpp")
+add_executable (${PROJECT_NAME} "server.cpp" "server.h" "ProvisioningAPI.cpp" "ProvisioningAPI.h" "spDataObject.h" "spDataObject.cpp" "AsVsHttpAPI.cpp" "Util.h" "DbConnection.h" "DbConnection.cpp" "spColumn.h" "spBaseObject.h" "spBaseObject.cpp")
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

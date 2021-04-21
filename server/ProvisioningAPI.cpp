@@ -19,7 +19,7 @@ void ProvApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
     }
     catch (const std::exception& e)
     {
-        logError(500, "Internal Server Error", e.what());
+        logError(500, e.what());
     }
 }
 
@@ -44,9 +44,12 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
         else if (path == "/api/account_create")     r = accountCreate(post_body);
         else if (path == "/api/account_update")     r = accountUpdate(post_body);
         else if (path == "/api/account_delete")     r = accountDelete(post_body);
-        else if (path == "/api/gateway_ip_create")  r = gatewayIpCreate(post_body);
-        else if (path == "/api/gateway_ip_update")  r = gatewayIpUpdate(post_body);
-        else if (path == "/api/gateway_ip_delete")  r = gatewayIpDelete(post_body);
+        else if (path == "/api/as_gateway_ip_create")  r = asGatewayIpCreate(post_body);
+        else if (path == "/api/as_gateway_ip_update")  r = asGatewayIpUpdate(post_body);
+        else if (path == "/api/as_gateway_ip_delete")  r = asGatewayIpDelete(post_body);
+        else if (path == "/api/vs_gateway_ip_create")  r = vsGatewayIpCreate(post_body);
+        else if (path == "/api/vs_gateway_ip_update")  r = vsGatewayIpUpdate(post_body);
+        else if (path == "/api/vs_gateway_ip_delete")  r = vsGatewayIpDelete(post_body);
         else if (path == "/api/cert_create")        r = certCreate(post_body);
         else if (path == "/api/cert_update")        r = certUpdate(post_body);
         else if (path == "/api/cert_delete")        r = certDelete(post_body);
@@ -55,11 +58,11 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
         else if (path == "/api/tn_delete")          r = tnDelete(post_body);
         else not_found = true;
 
-        if (not_found) logError(404, "Not Found", "API does not exist: " + path);
+        if (not_found) logError(404, "API does not exist: " + path);
         else
         {
             ResponseBuilder(downstream_)
-                .status(200, "OK")
+                .status(200, HTTPMessage::getDefaultReason(200))
                 .body(r)
                 .send();
 
@@ -67,19 +70,19 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
     }
     catch (const AsVsException& e)
     {
-        logError(400, "Bad Request", e.what());
+        logError(400, e.what());
     }
     catch (const boost::property_tree::ptree_error& e)
     {
-        logError(400, "Bad Request", e.what());
+        logError(400, e.what());
     }
     catch (const pqxx::pqxx_exception& e)
     {
-        logError(400, "Bad Request", e.base().what());
+        logError(400, e.base().what());
     }
-        catch (const std::exception& e)
+    catch (const std::exception& e)
     {
-        logError(500, "Internal Server Error", e.what());
+        logError(500, e.what());
     }
 
 
@@ -90,7 +93,7 @@ void ProvApiHandler::onEOM() noexcept
 {
     ResponseBuilder builder(downstream_);
     if (waiting_post)
-        logError(400, "Bad Request", "Provisioning API handler was waiting for request body but received EOM. Unexpected bad things may have happened and may happen in the future.");
+        logError(400, "Provisioning API handler was waiting for request body but received EOM. Unexpected bad things may have happened and may happen in the future.");
 
     ResponseBuilder(downstream_)
         .sendWithEOM();
@@ -111,7 +114,7 @@ void ProvApiHandler::onError(ProxygenError /*err*/) noexcept
     delete this;
 }
 
-void ProvApiHandler::logError(uint16_t code, const string& reason, const string& msg)
+void ProvApiHandler::logError(uint16_t code, const string& msg)
 {
     LOG(ERROR) << msg << std::endl;
 
@@ -120,7 +123,7 @@ void ProvApiHandler::logError(uint16_t code, const string& reason, const string&
     stringstream ss;
     boost::property_tree::json_parser::write_json(ss, resJson);
     ResponseBuilder(downstream_)
-        .status(code, reason)
+        .status(code, HTTPMessage::getDefaultReason(code))
         .body(ss.str())
         .send();
 }
@@ -179,21 +182,39 @@ string ProvApiHandler::accountDelete(const string& body)
     return spAccInfo.__delete();
 }
 
-string ProvApiHandler::gatewayIpCreate(const string& body)
+string ProvApiHandler::asGatewayIpCreate(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body);
+    spAsGatewayIpInfo spIpInfo(body);
     return spIpInfo.__insert();
 }
 
-string ProvApiHandler::gatewayIpUpdate(const string& body)
+string ProvApiHandler::asGatewayIpUpdate(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body);
+    spAsGatewayIpInfo spIpInfo(body);
     return spIpInfo.__update();
 }
 
-string ProvApiHandler::gatewayIpDelete(const string& body)
+string ProvApiHandler::asGatewayIpDelete(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body);
+    spAsGatewayIpInfo spIpInfo(body);
+    return spIpInfo.__delete();
+}
+
+string ProvApiHandler::vsGatewayIpCreate(const string& body)
+{
+    spVsGatewayIpInfo spIpInfo(body);
+    return spIpInfo.__insert();
+}
+
+string ProvApiHandler::vsGatewayIpUpdate(const string& body)
+{
+    spVsGatewayIpInfo spIpInfo(body);
+    return spIpInfo.__update();
+}
+
+string ProvApiHandler::vsGatewayIpDelete(const string& body)
+{
+    spVsGatewayIpInfo spIpInfo(body);
     return spIpInfo.__delete();
 }
 

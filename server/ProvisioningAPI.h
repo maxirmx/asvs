@@ -11,7 +11,7 @@ public:
     void onError(ProxygenError err) noexcept override;
 
 private:
-    void logError(uint16_t code, const string& reason, const string& msg);
+    void logError(uint16_t code, const string& msg);
 
     string customerCreate     (const string& body);
     string customerUpdate     (const string& body);
@@ -22,9 +22,12 @@ private:
     string accountCreate      (const string& body);
     string accountUpdate      (const string& body);
     string accountDelete      (const string& body);
-    string gatewayIpCreate    (const string& body);
-    string gatewayIpUpdate    (const string& body);
-    string gatewayIpDelete    (const string& body);
+    string asGatewayIpCreate  (const string& body);
+    string asGatewayIpUpdate  (const string& body);
+    string asGatewayIpDelete  (const string& body);
+    string vsGatewayIpCreate  (const string& body);
+    string vsGatewayIpUpdate  (const string& body);
+    string vsGatewayIpDelete  (const string& body);
     string certCreate         (const string& body);
     string certUpdate         (const string& body);
     string certDelete         (const string& body);
