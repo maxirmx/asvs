@@ -10,6 +10,12 @@ public:
     void onError(ProxygenError err) noexcept override;
 
 private:
+    enum AsVsOp
+    {
+        AsVsSigning,
+        AsVsVerify,
+        AsVsUnknown
+    };
 
     static uint16_t    AsVsCode2HttpCode(uint16_t AsVsCode);
     static const std::string AsVsCode2AsVsId(uint16_t AsVsCode);

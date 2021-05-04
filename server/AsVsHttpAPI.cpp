@@ -44,61 +44,57 @@ void AsVsApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
 
 void AsVsApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
 {
-    enum AsVsOp 
-    {
-        AsVsSigning,
-        AsVsVerify, 
-        AsVsUnknown
-    };
-
-    AsVsOp op = AsVsUnknown;
-    string XInstanceID;
-    string Accept;
+    waiting_post = false;
 
     try
     {
-        string ContentType;
 
         auto headers = message->getHeaders();
 
-        if ((ContentType = headers.getSingleOrEmpty("Content-Type")) != "application/json")
-        {
-            yeildError(4005, "Only 'application/json' Content-Type is supported.", ContentType);
-        }
+        string XInstanceID = headers.getSingleOrEmpty("X-InstanceID");
+        string ContentType = headers.getSingleOrEmpty("Content-Type");
+        string ContentLength = headers.getSingleOrEmpty("Content-Length");
+        string Accept = headers.getSingleOrEmpty("Accept");
+        AsVsOp op = AsVsUnknown;
 
 
-        auto post_body = body->moveToFbString().toStdString();
-        auto path = message->getPath();
-        auto client_ip = message->getClientIP();
+        /*  ATIS - 1000082
 
-        string r;
-        waiting_post = false;
-
-        VLOG(1) << "[AS & VS HTTP API request body] " << post_body << endl;
-
-        if (path == "/stir/v1/signing")              op = AsVsSigning;  
-        else if (path == "/stir/v1/verification")    op = AsVsVerify; 
-
-/*        ATIS - 1000082
-          5.2 Special Request Header Requirements
+            5.2 Special Request Header Requirements
 
             The following headers are expected to be sent in all HTTP requests :
             RequestID       -- optional
             InstanceID      -- optional
             Content-Type    -- mandatory Valid value is : “application/json”.
             Accept          -- optional  If specified, has to contain “application/json” content type, otherwise HTTP request will be rejected with “406 Not Acceptable” HTTP Status Code.
-                               If not specified, will be default handled as “application/json"
-*/
-        XInstanceID = headers.getSingleOrEmpty("X-InstanceID");
-        Accept = headers.getSingleOrEmpty("Accept");
-
-        if (Accept != "application/json" && Accept != "*/*")
+                                         If not specified, will be default handled as “application/json"
+        */
+        if (ContentType != "application/json")
+        {
+            yeildError(4004, "Only 'application/json' Content-Type is supported.", "application/json"   );
+        }
+        else if (Accept != "application/json" && Accept != "*/*")
         {
             yeildError(4002, "ATIS-1000082 requires Accept header field to be set to 'application/json', not '" + Accept + "'", Accept);
         }
-
-        switch (op)
+        else if (ContentLength == "")
         {
+            yeildError(4007, "Content-Length header is missing");
+        }
+        else
+        {
+            auto post_body = body->moveToFbString().toStdString();
+            auto path = message->getPath();
+            auto client_ip = message->getClientIP();
+
+
+            VLOG(1) << "[AS & VS HTTP API request body] " << post_body << endl;
+
+            if (path == "/stir/v1/signing")              op = AsVsSigning;
+            else if (path == "/stir/v1/verification")    op = AsVsVerify;
+
+            switch (op)
+            {
             case AsVsSigning:
                 yeildResponse(signing(post_body));
                 break;
@@ -109,6 +105,7 @@ void AsVsApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
             default:
                 yeildError(4003, "API does not exist: " + path);
                 break;
+            }
         }
     }
     catch (const std::exception& e)
