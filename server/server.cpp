@@ -21,7 +21,7 @@ DEFINE_string(postgres, "", "PostgresSql connection string (\"user=postgres host
 
 DEFINE_int32(threads,0, "Number of threads used by AS&VS HTTP API. Zero means to default to the number of cores on this machine.");
 
-int main(int argc, char* argv[]) 
+int main(int argc, char* argv[])
 {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
@@ -31,8 +31,8 @@ int main(int argc, char* argv[])
 
   if (FLAGS_postgres.empty())
       LOG(INFO) << "Database connection string has not been provided. We will try defaults but the result can be disappointing." << std::endl;
-  
-   try 
+
+   try
   {
       DbConnection::d = make_unique<DbConnection>(FLAGS_postgres);
       LOG(INFO) << DbConnection::d->describe();
@@ -63,8 +63,8 @@ int main(int argc, char* argv[])
   LOG(INFO) << "Binding provisioning API to: " << FLAGS_prov_api_http_ip << ":" << FLAGS_prov_api_http_port << endl;
   vector<HTTPServer::IPConfig> prov_api_defs =
   {
-    { 
-          SocketAddress(FLAGS_prov_api_http_ip, FLAGS_prov_api_http_port, true), 
+    {
+          SocketAddress(FLAGS_prov_api_http_ip, FLAGS_prov_api_http_port, true),
           HTTPServer::Protocol::HTTP
     }
   };
@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
   LOG(INFO) << "AS&VS HTTP API started using " << FLAGS_threads << " threads" << std::endl;
 
     // ....................... Shutdown .......................
-  
+
   prov_api_thread.join();
   asvs_api_server.stop();
   asvs_api_thread.join();

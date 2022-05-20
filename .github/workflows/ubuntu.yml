@@ -13,7 +13,7 @@ on:
 
 env:
   MAKEFLAGS: -j4
-  CACHE_VER: 1
+  CACHE_VER: 4
   DEPS: deps
 
 jobs:

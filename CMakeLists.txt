@@ -1,4 +1,4 @@
-﻿# 
+﻿#
 # Stirshaken AS & VS
 #
 cmake_minimum_required (VERSION 3.8)
@@ -11,12 +11,13 @@ project ("stirshaken-asvs-server")
 set(DEPS ${CMAKE_CURRENT_SOURCE_DIR}/deps CACHE STRING "Dependencies' folder'")
 set(DEPS_INCLUDE_DIR ${DEPS}/include)
 set(DEPS_LIB_DIR ${DEPS}/lib)
+set(DEPS_LIB_DIR_64 ${DEPS}/lib64)
 set(DEPS_BIN_DIR ${DEPS}/bin)
 set(DEPS_SBIN_DIR ${DEPS}/sbin)
 
 SET(V_PROXYGEN 2020.11.16.00)
-SET(V_PQXX 7.7.3)
-
+# V_PQXX 7.7.3  		# HASH 11e147bbe2d3024d68d29b38eab5d75899dbb6131e421a2dbf9f88bac9bf4b0d
+SET(V_PQXX 6.4.5)		# HASH 86921fdb0fe54495a79d5af2c96f2c771098c31e9b352d0834230fd2799ad362
 
 ExternalProject_Add(proxygen-prj
 	PREFIX ${DEPS}
@@ -27,20 +28,37 @@ ExternalProject_Add(proxygen-prj
 	UPDATE_COMMAND ""
 	PATCH_COMMAND sed s/\-DCMAKE_INSTALL_PREFIX=\"\$DEPS_DIR\"/\-DCMAKE_INSTALL_PREFIX=\"\$PREFIX\"/ < ${DEPS}/src/proxygen-src/proxygen/build.sh > ${DEPS}/src/proxygen-src/proxygen/b.sh
 	CONFIGURE_COMMAND  chmod +x ${DEPS}/src/proxygen-src/proxygen/b.sh
-	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/proxygen-src/proxygen ./b.sh -j 4 --prefix ${DEPS}
+	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/proxygen-src/proxygen ${CMAKE_COMMAND} -E env BOOST_INCLUDEDIR=${DEPS_INCLUDE_DIR} BOOST_LIBRARYDIR=${DEPS_LIB_DIR} ./b.sh -j 4 --prefix ${DEPS}
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/proxygen-src/proxygen ./install.sh
 )
 
-# ********************** PQXX *********************
 ExternalProject_Add(pqxx-prj
 	PREFIX ${DEPS}
 	URL https://github.com/jtv/libpqxx/archive/${V_PQXX}.tar.gz
-	URL_HASH SHA256=11e147bbe2d3024d68d29b38eab5d75899dbb6131e421a2dbf9f88bac9bf4b0d
+	URL_HASH SHA256=86921fdb0fe54495a79d5af2c96f2c771098c31e9b352d0834230fd2799ad362
 	SOURCE_DIR ${DEPS}/src/pqxx-src
 	DOWNLOAD_NO_PROGRESS true
 	UPDATE_COMMAND ""
 	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPS}
 )
+
+execute_process( COMMAND "awk" "-F=" "/^NAME/{print $2}" "/etc/os-release"
+				 RESULT_VARIABLE OSTYPE_RES OUTPUT_VARIABLE OSTYPE_TXT )
+if(OSTYPE_RES EQUAL 0)
+	if("${OSTYPE_TXT}" MATCHES "\"Ubuntu\"")
+		message(STATUS "Adding Ubuntu compile definitions")
+		set(IS_UBUNTU ON)
+	elseif("${OSTYPE_TXT}" MATCHES "\"CentOS Linux\"")
+		message(STATUS "Adding CentOS compile definitions")
+		set(IS_UBUNTU OFF)
+	else()
+		message(FATAL_ERROR "Unsupported OSTYPE: ${OSTYPE}")
+	endif()
+else(OSTYPE_RES EQUAL 0)
+	message(FATAL_ERROR "Failed to detect OSTYPE: ${OSTYPE_TXT}")
+endif(OSTYPE_RES EQUAL 0)
+
+
 
 include_directories(BEFORE ${DEPS_INCLUDE_DIR})
 add_subdirectory ("server")

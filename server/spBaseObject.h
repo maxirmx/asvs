@@ -1,4 +1,4 @@
-// spBaseObject 
+// spBaseObject
 
 class spBaseObject;
 

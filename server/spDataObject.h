@@ -1,8 +1,7 @@
-// spCustomerInfo 
-// spCustomerIpInfo 
-// spAccountInfo 
-// spAsGatewayInfo
-// spVsGatewayInfo
+// spCustomerInfo
+// spCustomerIpInfo
+// spAccountInfo
+// spGatewayInfo
 // spTnInfo
 // spCertInfo
 
@@ -36,21 +35,11 @@ private:
     void __proto(void);
 };
 
-class spAsGatewayIpInfo: public spBaseObject
+class spGatewayIpInfo: public spBaseObject
 {
 public:
-    spAsGatewayIpInfo(const std::string& body);
-    spAsGatewayIpInfo(const pqxx::row& r);
-
-private:
-    void __proto(void);
-};
-
-class spVsGatewayIpInfo : public spBaseObject
-{
-public:
-    spVsGatewayIpInfo(const std::string& body);
-    spVsGatewayIpInfo(const pqxx::row& r);
+    spGatewayIpInfo(const std::string& body);
+    spGatewayIpInfo(const pqxx::row& r);
 
 private:
     void __proto(void);

@@ -21,4 +21,4 @@ sudo yum -y update                          \
                     wget                    \
                     git                     \
 &&   sudo yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
-&&   sudo yum -y install postgresql-devel  ; sudo yum clean all  
+&&   sudo yum -y install postgresql-devel  ; sudo yum clean all

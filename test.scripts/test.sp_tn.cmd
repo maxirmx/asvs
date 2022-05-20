@@ -13,4 +13,3 @@ curl --header "Content-Type: application/json" --data  "{  \"sp_tn_uuid\": \"1d9
 curl --header "Content-Type: application/json" --data  "{  \"sp_tn_uuid\": \"1d92bf3d-5A01-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"00000001-e002-4438-9fc3-adabdd3c255c\", \"tn\":\"1927\" }" http://localhost:8080/api/tn_create
 
 
-    

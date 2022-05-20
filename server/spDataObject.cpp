@@ -6,7 +6,7 @@ using namespace proxygen;
 
 // --------------------------------------------------------------------------------------------------------------------------
 
-// [TODO] cps_limit does not look solid enough 
+// [TODO] cps_limit does not look solid enough
 // [TODO] check that uuid is valid on Provisioning API
 
 void spCustomerInfo::__proto(void)
@@ -61,7 +61,7 @@ spCustomerInfo::spCustomerInfo(const pqxx::row& r): spBaseObject("sp_customers",
 
 void spCustomerIpInfo::__proto(void)
 {
-    //    ATT RFC5213  https ://tools.ietf.org/html/rfc5213#page-74 
+    //    ATT RFC5213  https ://tools.ietf.org/html/rfc5213#page-74
     //    Access Technology Type Option ?
 
 
@@ -71,10 +71,10 @@ void spCustomerIpInfo::__proto(void)
         {"sp_customer_uuid",        &spBaseObject::__crt_pt <spStringColumn, string> },
         {"customer_ip",             &spBaseObject::__crt_pt <spStringColumn, string> },
         {"modified_on",             &spBaseObject::__crt_pt <spTimeColumn,   string> },
+        {"orig_id",                 &spBaseObject::__crt_pt <spStringColumn, string> },
         {"tech_prefix",             &spBaseObject::__crt_pt <spStringColumn, string> },
         {"att_level_with_sp_ani",   &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"att_level_wo_sp_ani",     &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"att_level_non_US_ani",    &spBaseObject::__crt_pt <spStringColumn, string> }
+        {"att_level_wo_sp_ani",     &spBaseObject::__crt_pt <spStringColumn, string> }
     };
 
     proto_fields_pq =
@@ -83,10 +83,10 @@ void spCustomerIpInfo::__proto(void)
         {"sp_customer_uuid",        &spBaseObject::__crt_pq <spStringColumn, string> },
         {"modified_on",             &spBaseObject::__crt_pq <spTimeColumn,   string> },
         {"customer_ip",             &spBaseObject::__crt_pq <spStringColumn, string> },
+        {"orig_id",                 &spBaseObject::__crt_pq <spStringColumn, string> },
         {"tech_prefix",             &spBaseObject::__crt_pq <spStringColumn, string> },
         {"att_level_with_sp_ani",   &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"att_level_wo_sp_ani",     &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"att_level_non_US_ani",    &spBaseObject::__crt_pq <spStringColumn, string> }
+        {"att_level_wo_sp_ani",     &spBaseObject::__crt_pq <spStringColumn, string> }
     };
 }
 
@@ -114,7 +114,7 @@ void spAccountInfo::__proto(void)
         {"modified_on",                     &spBaseObject::__crt_pt <spTimeColumn,  string>  },
         {"expired_on",                      &spBaseObject::__crt_pt <spTimeColumn,  string>  },
         {"cps_limit",                       &spBaseObject::__crt_pt <spInt32Column, int32_t> },
-        {"as_enabled",                      &spBaseObject::__crt_pt <spBoolColumn,  bool>    }, 
+        {"as_enabled",                      &spBaseObject::__crt_pt <spBoolColumn,  bool>    },
         {"vs_enabled",                      &spBaseObject::__crt_pt <spBoolColumn,  bool>    },
         {"sp_name",                         &spBaseObject::__crt_pt <spStringColumn, string> },
         {"default_att_level_with_sp_ani",   &spBaseObject::__crt_pt <spStringColumn, string> },
@@ -151,63 +151,31 @@ spAccountInfo::spAccountInfo(const pqxx::row& r) : spBaseObject("sp_accounts", "
 
 // --------------------------------------------------------------------------------------------------------------------------
 
-void spAsGatewayIpInfo::__proto(void)
+void spGatewayIpInfo::__proto(void)
 {
     proto_fields_pt =
     {
-        {"sp_as_gateway_ip_uuid",           &spBaseObject::__crt_pt <spStringColumn, string> },
+        {"sp_gateway_ip_uuid",              &spBaseObject::__crt_pt <spStringColumn, string> },
         {"sp_account_uuid",                 &spBaseObject::__crt_pt <spStringColumn, string> },
         {"gateway_ip",                      &spBaseObject::__crt_pt <spStringColumn, string> }
     };
 
     proto_fields_pq =
     {
-        {"sp_as_gateway_ip_uuid",           &spBaseObject::__crt_pq <spStringColumn, string> },
+        {"sp_gateway_ip_uuid",              &spBaseObject::__crt_pq <spStringColumn, string> },
         {"sp_account_uuid",                 &spBaseObject::__crt_pq <spStringColumn, string> },
         {"gateway_ip",                      &spBaseObject::__crt_pq <spStringColumn, string> }
     };
 
 }
 
-spAsGatewayIpInfo::spAsGatewayIpInfo(const string& b): spBaseObject("sp_as_gateway_ip", "sp_as_gateway_ip_uuid")
+spGatewayIpInfo::spGatewayIpInfo(const string& b): spBaseObject("sp_gateway_ip", "sp_gateway_ip_uuid")
 {
     __proto();
     __rmpINT(b);
 }
 
-spAsGatewayIpInfo::spAsGatewayIpInfo(const pqxx::row& r): spBaseObject("sp_as_gateway_ip", "sp_as_gateway_ip_uuid")
-{
-    __proto();
-    __rmpIUS(r);
-}
-
-// --------------------------------------------------------------------------------------------------------------------------
-
-void spVsGatewayIpInfo::__proto(void)
-{
-    proto_fields_pt =
-    {
-        {"sp_vs_gateway_ip_uuid",           &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"sp_account_uuid",                 &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"gateway_ip",                      &spBaseObject::__crt_pt <spStringColumn, string> }
-    };
-
-    proto_fields_pq =
-    {
-        {"sp_vs_gateway_ip_uuid",           &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"sp_account_uuid",                 &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"gateway_ip",                      &spBaseObject::__crt_pq <spStringColumn, string> }
-    };
-
-}
-
-spVsGatewayIpInfo::spVsGatewayIpInfo(const string& b) : spBaseObject("sp_vs_gateway_ip", "sp_vs_gateway_ip_uuid")
-{
-    __proto();
-    __rmpINT(b);
-}
-
-spVsGatewayIpInfo::spVsGatewayIpInfo(const pqxx::row& r) : spBaseObject("sp_vs_gateway_ip", "sp_vs_gateway_ip_uuid")
+spGatewayIpInfo::spGatewayIpInfo(const pqxx::row& r): spBaseObject("sp_gateway_ip", "sp_gateway_ip_uuid")
 {
     __proto();
     __rmpIUS(r);

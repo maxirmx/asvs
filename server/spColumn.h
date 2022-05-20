@@ -1,7 +1,7 @@
-// spBaseColumn 
-// spStringColumn 
-// spBoolColumn 
-// spInt32Column 
+// spBaseColumn
+// spStringColumn
+// spBoolColumn
+// spInt32Column
 // spTimeColumn
 
 class spBaseColumn

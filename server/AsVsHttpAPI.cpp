@@ -21,14 +21,14 @@ void AsVsApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
     5.3 Special Response Header Requirements
 
     The X-RequestID transaction ID should be included in order to make possible the transaction traceability  in case of troubleshooting
-    and fault analysis. If received, it will not be validated explicitly by server.If not received, it will be automatically generated 
-    by STI - AS/VS service on request receipt. Received/Generated transaction ID will be returned back in the corresponding HTTP response 
+    and fault analysis. If received, it will not be validated explicitly by server.If not received, it will be automatically generated
+    by STI - AS/VS service on request receipt. Received/Generated transaction ID will be returned back in the corresponding HTTP response
     in `X-RequestID` header.
 */
         XRequestID = headers.getSingleOrEmpty("X-RequestID");
         VLOG(1) << "[AS & VS HTTP API request] " << path << " XRequestID: '" << XRequestID << "'";
 
-        if (XRequestID.empty()) 
+        if (XRequestID.empty())
         {
             XRequestID = boost::lexical_cast<std::string>(generator());
             VLOG(1) << "                    -----> XRequestID: '" << XRequestID << "'";
@@ -159,21 +159,21 @@ void AsVsApiHandler::yeildError(uint16_t AsVsCode, const string& msg, const stri
     stringstream ss;
 
     LOG(ERROR) << "Error: " << AsVsCode2AsVsExceptionKey(AsVsCode) + " AsVsCode:" << AsVsCode << " Message: " << msg;
-   
+
  //  Something like  { "requestError": { "serviceException": { "messageId": "POL4003", "text" : "Error: Requested resource was not found."  }  }  }
 
- ss << 
+ ss <<
  "{ \n"
  " \"requestError\": \n"
  "  {\n"
  "    \"" << AsVsCode2AsVsExceptionKey(AsVsCode) << "\": \n"
- "    {\n" 
+ "    {\n"
  "        \"messageId\": \"" << AsVsCode2AsVsId(AsVsCode) << "\",\n"
  "        \"text\": \"" << AsVsCode2AsVsText(AsVsCode) << "\", \n"
  "        \"variables\": [ " << (p1 == "" ? "" : "\"" + p1 + "\"" + (p2 == "" ? "" : " , ")) + (p2 == "" ? "" : " , ") << " ]\n"
  "    }\n"
  "  }\n"
- "}\n";        
+ "}\n";
 
  string x = ss.str();
     ResponseBuilder(downstream_)
@@ -182,7 +182,7 @@ void AsVsApiHandler::yeildError(uint16_t AsVsCode, const string& msg, const stri
         .header("X-RequestID", XRequestID)
         .body(x)
         .send();
-} 
+}
 
 const string AsVsApiHandler::signing(const string& body)
 {

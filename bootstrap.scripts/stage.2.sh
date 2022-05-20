@@ -10,5 +10,5 @@ cd /home/maxirmx/bootstrap \
 #&& wget https://dl.bintray.com/boostorg/release/${V_BOOST}/source/boost_${V_BOOST_}.tar.gz -nv -O boost.tar.gz \
 #&& tar -xzf boost.tar.gz && cd ~/bootstrap/boost_${V_BOOST_} \
 #&& ./bootstrap.sh  && ./b2 -j8 -d1 --without-python --prefix=/usr/local install \
-#&& cd ~/bootstrap 
+#&& cd ~/bootstrap
 #&& rm -rf /bootstrap/boost_${V_BOOST_}

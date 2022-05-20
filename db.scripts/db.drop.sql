@@ -3,8 +3,7 @@
 
 DROP TABLE IF EXISTS sp_customer_ip;
 DROP TABLE IF EXISTS sp_customers;
-DROP TABLE IF EXISTS sp_as_gateway_ip;
-DROP TABLE IF EXISTS sp_vs_gateway_ip;
+DROP TABLE IF EXISTS sp_gateway_ip;
 DROP TABLE IF EXISTS sp_tn;
 DROP TABLE IF EXISTS sp_cert;
 DROP TABLE IF EXISTS sp_accounts;

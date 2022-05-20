@@ -15,11 +15,16 @@ env:
   MAKEFLAGS: -j4
   CACHE_VER: 1
   DEPS: deps
+  V_BOOST: '1.74.0'
+  V_BOOST_: 1_74_0
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     container:
       image: centos:7
     strategy:
@@ -28,34 +33,69 @@ jobs:
       - name: Install packages
         run: |
           yum -y update
-          yum -y install epel-release
-          yum -y install \
-          bison flex libcap-dev libevent-dev libiberty-dev libnuma-dev libsnappy-dev \
-          libsodium-dev libtool m4 make pkg-config unzip gperf libboost-all-dev \
-          libdouble-conversion-dev libgflags-dev libgoogle-glog-dev libjemalloc-dev \
-          binutils-dev libkrb5-dev liblz4-dev liblzma-dev libsasl2-dev libssl-dev \
-          libzstd-dev zlib1g-dev wget cmake g++ git
+          yum -y remove git
+          yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
+          yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+          yum -y update
+          yum -y install epel-release 
+          yum -y install double-conversion-devel jemalloc-devel glog-devel gflags-devel snappy-devel openssl-devel   \
+                         libevent-devel libsodium-devel gperf libzstd-devel xmlto xz-devel bzip2-devel python3 wget  \
+                         bison flex cmake3 lz4-devel sudo git postgresql-devel binutils-devel 
+          yum clean all
+
+      - name: Configure cmake
+        run: |
+          echo #! /bin/sh > /usr/local/bin/cmake
+          echo cmake3 \"\$@\" > /usr/local/bin/cmake
+          chmod +x /usr/local/bin/cmake
+
+      - name: Install devtoolset-9
+        run: |
+          yum install centos-release-scl -y
+          yum clean all
+          yum install devtoolset-9-* -y
+          scl enable devtoolset-9 -- gcc --version
 
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Create deps folder
         run: |
-          mkdir ${{env.DEPS}}
+          mkdir ${{ env.DEPS }}
+          mkdir bootstrap
 
       - name: Process cache
+        id: cache-deps
         uses: actions/cache@v2
         with:
-          path: ${{env.DEPS}}
+          path: |
+            ${{ env.DEPS }}
+            bootstrap
           key:  centos7-v${{ env.CACHE_VER }}
+
+      - name: Load boost
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: |
+          cd bootstrap
+          wget https://boostorg.jfrog.io/artifactory/main/release/${{ env.V_BOOST }}/source/boost_${{ env.V_BOOST_ }}.tar.gz -nv -O boost.tar.gz
+          tar -xzf boost.tar.gz
+          cd boost_${{ env.V_BOOST_ }}
+          scl enable devtoolset-9 -- ./bootstrap.sh
+
+      - name: Install boost
+        run: |
+          cd bootstrap/boost_${{ env.V_BOOST_ }}
+          scl enable devtoolset-9 -- ./b2 -j8 -d1 --with-context --with-filesystem --with-program_options --with-regex  \
+                                                                 --with-system --with-thread --with-date_time           \
+                                                                 --with-iostreams --prefix=/usr/local install    
 
       - name: Configure
         run: |
           mkdir build
           cd build
-          cmake ..
+          scl enable devtoolset-9 -- cmake3 ..
 
       - name: Build
         run: |
           cd build
-          make
+          scl enable devtoolset-9 -- make -j4

@@ -11,6 +11,6 @@ tar -xzf proxygen.tar.gz
 cd "$DIR_ROOT"/.bootstrap/proxygen-${V_PROXIGEN}/proxygen/
 #sed s/\-DCMAKE_INSTALL_PREFIX=\"\$DEPS_DIR\"/\-DCMAKE_INSTALL_PREFIX=\"\$PREFIX\"/ < build.sh > b.sh
 #chmod +x b.sh
-./build.sh -j 4 --prefix /usr/local 
+./build.sh -j 4 --prefix /usr/local
 #&& ./install.sh
 

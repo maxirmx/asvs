@@ -5,4 +5,3 @@ curl -v --header "Content-Type: application/marc" --data  "{ \"uuid\" : \"97092d
 curl -v --header "Content-Type: application/json" --header "Accept: application\marc" --data  "{ \"uuid\" : \"97092d99-e001-4438-9fc3-adabdd3c255c\"}" http://localhost:8081/stir/v1/signing
 
 
-    

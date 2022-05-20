@@ -44,12 +44,9 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
         else if (path == "/api/account_create")     r = accountCreate(post_body);
         else if (path == "/api/account_update")     r = accountUpdate(post_body);
         else if (path == "/api/account_delete")     r = accountDelete(post_body);
-        else if (path == "/api/as_gateway_ip_create")  r = asGatewayIpCreate(post_body);
-        else if (path == "/api/as_gateway_ip_update")  r = asGatewayIpUpdate(post_body);
-        else if (path == "/api/as_gateway_ip_delete")  r = asGatewayIpDelete(post_body);
-        else if (path == "/api/vs_gateway_ip_create")  r = vsGatewayIpCreate(post_body);
-        else if (path == "/api/vs_gateway_ip_update")  r = vsGatewayIpUpdate(post_body);
-        else if (path == "/api/vs_gateway_ip_delete")  r = vsGatewayIpDelete(post_body);
+        else if (path == "/api/gateway_ip_create")  r = gwIpCreate(post_body);
+        else if (path == "/api/gateway_ip_update")  r = gwIpUpdate(post_body);
+        else if (path == "/api/gateway_ip_delete")  r = gwIpDelete(post_body);
         else if (path == "/api/cert_create")        r = certCreate(post_body);
         else if (path == "/api/cert_update")        r = certUpdate(post_body);
         else if (path == "/api/cert_delete")        r = certDelete(post_body);
@@ -99,17 +96,17 @@ void ProvApiHandler::onEOM() noexcept
         .sendWithEOM();
 }
 
-void ProvApiHandler::onUpgrade(UpgradeProtocol /*protocol*/) noexcept 
+void ProvApiHandler::onUpgrade(UpgradeProtocol /*protocol*/) noexcept
 {
     // handler doesn't support upgrades
 }
 
-void ProvApiHandler::requestComplete() noexcept 
+void ProvApiHandler::requestComplete() noexcept
 {
     delete this;
 }
 
-void ProvApiHandler::onError(ProxygenError /*err*/) noexcept 
+void ProvApiHandler::onError(ProxygenError /*err*/) noexcept
 {
     delete this;
 }
@@ -144,7 +141,7 @@ string ProvApiHandler::customerUpdate(const string& body)
 string ProvApiHandler::customerDelete(const string& body)
 {
     spCustomerInfo spCInfo(body);
-    return spCInfo.__delete();   
+    return spCInfo.__delete();
 }
 string ProvApiHandler::customerIpCreate(const string& body)
 {
@@ -182,39 +179,21 @@ string ProvApiHandler::accountDelete(const string& body)
     return spAccInfo.__delete();
 }
 
-string ProvApiHandler::asGatewayIpCreate(const string& body)
+string ProvApiHandler::gwIpCreate(const string& body)
 {
-    spAsGatewayIpInfo spIpInfo(body);
+    spGatewayIpInfo spIpInfo(body);
     return spIpInfo.__insert();
 }
 
-string ProvApiHandler::asGatewayIpUpdate(const string& body)
+string ProvApiHandler::gwIpUpdate(const string& body)
 {
-    spAsGatewayIpInfo spIpInfo(body);
+    spGatewayIpInfo spIpInfo(body);
     return spIpInfo.__update();
 }
 
-string ProvApiHandler::asGatewayIpDelete(const string& body)
+string ProvApiHandler::gwIpDelete(const string& body)
 {
-    spAsGatewayIpInfo spIpInfo(body);
-    return spIpInfo.__delete();
-}
-
-string ProvApiHandler::vsGatewayIpCreate(const string& body)
-{
-    spVsGatewayIpInfo spIpInfo(body);
-    return spIpInfo.__insert();
-}
-
-string ProvApiHandler::vsGatewayIpUpdate(const string& body)
-{
-    spVsGatewayIpInfo spIpInfo(body);
-    return spIpInfo.__update();
-}
-
-string ProvApiHandler::vsGatewayIpDelete(const string& body)
-{
-    spVsGatewayIpInfo spIpInfo(body);
+    spGatewayIpInfo spIpInfo(body);
     return spIpInfo.__delete();
 }
 

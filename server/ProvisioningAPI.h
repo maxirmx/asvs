@@ -22,12 +22,9 @@ private:
     string accountCreate      (const string& body);
     string accountUpdate      (const string& body);
     string accountDelete      (const string& body);
-    string asGatewayIpCreate  (const string& body);
-    string asGatewayIpUpdate  (const string& body);
-    string asGatewayIpDelete  (const string& body);
-    string vsGatewayIpCreate  (const string& body);
-    string vsGatewayIpUpdate  (const string& body);
-    string vsGatewayIpDelete  (const string& body);
+    string gwIpCreate         (const string& body);
+    string gwIpUpdate         (const string& body);
+    string gwIpDelete         (const string& body);
     string certCreate         (const string& body);
     string certUpdate         (const string& body);
     string certDelete         (const string& body);
@@ -40,7 +37,7 @@ private:
     bool waiting_post;
 };
 
-class ProvApiHandlerFactory : public RequestHandlerFactory 
+class ProvApiHandlerFactory : public RequestHandlerFactory
 {
 public:
      ProvApiHandlerFactory( void)  {   }
@@ -51,5 +48,5 @@ public:
      RequestHandler* onRequest(RequestHandler*, HTTPMessage*) noexcept override { return new ProvApiHandler(); }
 
 private:
-     
+
 };

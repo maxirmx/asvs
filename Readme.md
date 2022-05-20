@@ -49,10 +49,10 @@ curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_uuid\
 ### sp_customer_ip
 #### ..... create
 ```
-curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-0001-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0001\" , \"att_level_wo_sp_ani\" : \"A\"}" http://localhost:8082/api/customer_ip_create
-curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-0002-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0071\" , \"att_level_non_US_ani\" : \"C\" , \"att_level_wo_sp_ani\" : \"B\"}" http://localhost:8082/api/customer_ip_create
-curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-0003-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0701\" , \"att_level_with_sp_ani\" : \"A\" , \"att_level_wo_sp_ani\" : \"A\"}" http://localhost:8082/api/customer_ip_create
-curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-1003-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0701\" , \"att_level_with_sp_ani\" : \"A\" , \"att_level_wo_sp_ani\" : \"C\"}" http://localhost:8082/api/customer_ip_create
+curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-0001-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0001\" , \"orig_id\" : \"Customer0001\", \"att_level_wo_sp_ani\" : \"A\"}" http://localhost:8082/api/customer_ip_create
+curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-0002-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0071\" , \"orig_id\" : \"Customer0071\" , \"att_level_wo_sp_ani\" : \"B\"}" http://localhost:8082/api/customer_ip_create
+curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-0003-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0701\" , \"orig_id\" : \"Customer0071\", \"att_level_with_sp_ani\" : \"A\" , \"att_level_wo_sp_ani\" : \"A\"}" http://localhost:8082/api/customer_ip_create
+curl -v --header "Content-Type: application/json" --data  "{ \"sp_customer_ip_uuid\":\"8cf1d751-2024-1003-bc7a-e61e08e3869b\",  \"sp_customer_uuid\": \"4f4867be-0002-4670-9148-3a9f5c70015e\", \"customer_ip\":\"192.168.11.46\" , \"tech_prefix\": \"0701\" , \"orig_id\" : \"Customer0071\", \"att_level_with_sp_ani\" : \"A\" , \"att_level_wo_sp_ani\" : \"C\"}" http://localhost:8082/api/customer_ip_create
 ```
 #### ..... update
 ```
@@ -77,34 +77,21 @@ curl -v --header "Content-Type: application/json" --data  "{ \"sp_account_uuid\"
 ```
 curl -v --header "Content-Type: application/json" --data  "{ \"sp_account_uuid\" : \"97092d99-e101-4438-9fc3-adabdd3c255c\"}" http://localhost:8080/api/account_delete
 ```
-### sp_as_gateway_ip
+### sp_gateway_ip
 #### ..... create
 ```
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_as_gateway_ip_uuid\": \"1d92bf3d-4001-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"192.168.11.46\" }" http://localhost:8082/api/as_gateway_ip_create
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_as_gateway_ip_uuid\": \"1d92bf3d-4A01-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"192.168.11.47\" }" http://localhost:8082/api/as_gateway_ip_create
+curl -v --header "Content-Type: application/json" --data  "{  \"sp_gateway_ip_uuid\": \"1d92bf3d-4001-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"192.168.11.46\" }" http://localhost:8082/api/gateway_ip_create
+curl -v --header "Content-Type: application/json" --data  "{  \"sp_gateway_ip_uuid\": \"1d92bf3d-4A01-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"192.168.11.47\" }" http://localhost:8082/api/gateway_ip_create
 ```
 #### ..... update
 ```
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_as_gateway_ip_uuid\": \"1d92bf3d-4A01-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"10.10.11.47\" }" http://localhost:8082/api/as_gateway_ip_update
+curl -v --header "Content-Type: application/json" --data  "{  \"sp_gateway_ip_uuid\": \"1d92bf3d-4A01-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"10.10.11.47\" }" http://localhost:8082/api/gateway_ip_update
 ```
 #### ..... delete
 ```
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_as_gateway_ip_uuid\": \"1d92bf3d-4A01-4ed9-bbda-541ed9589c9a\"}" http://localhost:8080/api/as_gateway_ip_delete
+curl -v --header "Content-Type: application/json" --data  "{  \"sp_gateway_ip_uuid\": \"1d92bf3d-4A01-4ed9-bbda-541ed9589c9a\"}" http://localhost:8080/api/gateway_ip_delete
 ```
-### sp_vs_gateway_ip
-#### ..... create
-```
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_vs_gateway_ip_uuid\": \"1d92bf3d-5001-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"192.168.11.46\" }" http://localhost:8082/api/vs_gateway_ip_create
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_vs_gateway_ip_uuid\": \"1d92bf3d-5A01-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"192.168.11.47\" }" http://localhost:8082/api/vs_gateway_ip_create
-```
-#### ..... update
-```
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_vs_gateway_ip_uuid\": \"1d92bf3d-5A01-4ed9-bbda-541ed9589c9a\",\"sp_account_uuid\": \"97092d99-e001-4438-9fc3-adabdd3c255c\", \"gateway_ip\":\"10.10.11.47\" }" http://localhost:8082/api/vs_gateway_ip_update
-```
-#### ..... delete
-```
-curl -v --header "Content-Type: application/json" --data  "{  \"sp_vs_gateway_ip_uuid\": \"1d92bf3d-5A01-4ed9-bbda-541ed9589c9a\"}" http://localhost:8080/api/vs_gateway_ip_delete
-```
+
 ### sp_tn
 #### ..... create
 ```

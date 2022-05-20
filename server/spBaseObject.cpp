@@ -10,7 +10,7 @@ string spBaseObject::__insert(void)
     auto modified_on = chrono::system_clock::now();
     if (search != fields.end()) *fields["modified_on"] = modified_on;
     else                        fields.insert({ "modified_on", make_shared<spTimeColumn>(modified_on) });
-  
+
     string statement = "INSERT INTO " + __getNME() + __crtIUS(" VALUES ", true) + " RETURNING *";
 
     pqxx::result r = DbConnection::d->exec(statement);
@@ -36,7 +36,7 @@ string spBaseObject::__update(void)
     if (r.size() == 0) throw (AsVsException("Record with " + __getMKE() + " = " + qk + " not found"));
     __rmpIUS(r[0]);
 
-    return __srsIUS(); 
+    return __srsIUS();
 }
 
 string spBaseObject::__delete(void)

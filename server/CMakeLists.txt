@@ -1,7 +1,4 @@
-﻿# CMakeList.txt: проект CMake для server; включите исходный код и определения,
-# укажите здесь логику для конкретного проекта.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
 
 project (server)
 
@@ -14,7 +11,7 @@ set(BOOST_USE_STATIC_RUNTIME OFF)
 
 link_directories(/usr/local/lib)
 
-find_package( Boost 1.71 COMPONENTS context  date_time          REQUIRED ) 
+find_package( Boost 1.71 COMPONENTS context  date_time          REQUIRED )
 find_package( Threads                                           REQUIRED )
 
 find_library(Z                  z                               REQUIRED )
@@ -43,53 +40,48 @@ set(LIBS
 # ---
         ${PQ}
 # ---
-        ${GLOG}
-        ${GFLAGS}
-        ${SSL}
-        ${Z}
-        ${EVENT}
-        ${CRYPTO}
-        ${CMAKE_THREAD_LIBS_INIT}
-        ${D}
-        ${SNAPPY}
-        ${IBERTY}
-        ${JE}
-        ${DL}
-        ${SODIUM}
-        ${Z}
-        ${LZ4}
-        ${LZMA}
-        ${BZ2}
-        ${ZSTD}
+        ${GLOG} ${GFLAGS} ${SSL} ${Z} ${EVENT} ${CRYPTO} ${CMAKE_THREAD_LIBS_INIT}
+        ${D} ${SNAPPY} ${IBERTY} ${JE} ${DL} ${SODIUM} ${Z} ${LZ4} ${LZMA} ${BZ2} ${ZSTD}
 )
 
 add_executable (${PROJECT_NAME}
-                "server.cpp" 
-                "server.h" 
-                "ProvisioningAPI.cpp" 
-                "ProvisioningAPI.h" 
-                "spDataObject.h" 
-                "spDataObject.cpp" 
-                "AsVsHttpAPI.cpp" 
-                "Util.h" 
-                "DbConnection.h" 
-                "DbConnection.cpp" 
-                "spColumn.h" 
-                "spBaseObject.h" 
+                "server.cpp"
+                "server.h"
+                "ProvisioningAPI.cpp"
+                "ProvisioningAPI.h"
+                "spDataObject.h"
+                "spDataObject.cpp"
+                "AsVsHttpAPI.cpp"
+                "Util.h"
+                "DbConnection.h"
+                "DbConnection.cpp"
+                "spColumn.h"
+                "spBaseObject.h"
                 "spBaseObject.cpp"
 )
 
 function(add_external_library NAME)
 	add_library(${NAME} STATIC IMPORTED)
-	set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${DEPS_LIB_DIR}/lib${NAME}.a)
+       	set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${DEPS_LIB_DIR}/lib${NAME}.a)
 	target_link_libraries(${PROJECT_NAME} ${NAME})
 endfunction()
+
+function(add_external_library_64 NAME)
+	add_library(${NAME} STATIC IMPORTED)
+        set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${DEPS_LIB_DIR_64}/lib${NAME}.a)
+	target_link_libraries(${PROJECT_NAME} ${NAME})
+endfunction()
+
 
 add_external_library(proxygenhttpserver)
 add_external_library(proxygen)
 add_external_library(wangle)
 add_external_library(fizz)
 add_external_library(folly)
-add_external_library(pqxx) 
+if(${IS_UBUNTU})
+        add_external_library(pqxx)
+else(${IS_UBUNTU})
+        add_external_library_64(pqxx)
+endif(${IS_UBUNTU})
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
