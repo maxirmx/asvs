@@ -1,5 +1,8 @@
 .vs/*
+.vscode/
 out/*
+deps/*
+build/*
 boost/*
 proxygen/*
 pqxx/*

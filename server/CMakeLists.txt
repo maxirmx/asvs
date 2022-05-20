@@ -14,47 +14,35 @@ set(BOOST_USE_STATIC_RUNTIME OFF)
 
 link_directories(/usr/local/lib)
 
-find_package( Boost 1.74 COMPONENTS context             REQUIRED ) 
-find_package( Threads                                   REQUIRED )
+find_package( Boost 1.71 COMPONENTS context  date_time          REQUIRED ) 
+find_package( Threads                                           REQUIRED )
 
-find_library(Z                  z                       REQUIRED )
-find_library(SSL                ssl                     REQUIRED )
-find_library(CRYPTO             crypto                  REQUIRED )
-find_library(LZMA               lzma                    REQUIRED )
-find_library(BZ2                bz2                     REQUIRED )
-find_library(ZSTD               zstd                    REQUIRED )
+find_library(Z                  z                               REQUIRED )
+find_library(SSL                ssl                             REQUIRED )
+find_library(CRYPTO             crypto                          REQUIRED )
+find_library(LZMA               lzma                            REQUIRED )
+find_library(BZ2                bz2                             REQUIRED )
+find_library(ZSTD               zstd                            REQUIRED )
+find_library(LZ4                lz4                             REQUIRED )
 
-find_library(D                  double-conversion       REQUIRED )
-find_library(DL                 dl                      REQUIRED )
-find_library(SODIUM             sodium                  REQUIRED )
-find_library(EVENT              event                   REQUIRED )
-find_library(JE                 jemalloc                REQUIRED )
-find_library(SNAPPY             snappy                  REQUIRED )
+find_library(D                  double-conversion               REQUIRED )
+find_library(DL                 dl                              REQUIRED )
+find_library(SODIUM             sodium                          REQUIRED )
+find_library(EVENT              event                           REQUIRED )
+find_library(JE                 jemalloc                        REQUIRED )
+find_library(SNAPPY             snappy                          REQUIRED )
+find_library(IBERTY             iberty                          REQUIRED )
 
+find_library (GFLAGS            gflags                          REQUIRED )
+find_library (GLOG              glog                            REQUIRED )
 
-find_library (GFLAGS            gflags                  REQUIRED )
-find_library (GLOG              glog                    REQUIRED )
-
-find_library(PROXYGEN           proxygen                REQUIRED )
-find_library(PROXYGENHTTPSERVER proxygenhttpserver      REQUIRED )
-find_library(WANGLE             wangle                  REQUIRED )
-find_library(FOLLY              folly                   REQUIRED )
-find_library(FIZZ               fizz                    REQUIRED )
-
-find_library(PQ                 pq                      REQUIRED )
-find_library(PQXX 		pqxx			REQUIRED )
+find_library(PQ                 pq                              REQUIRED )
 
 set(LIBS
         ${Boost_LIBRARIES}
-#		 ${Boost_CONTEXT_LIBRARY}
-#        ${Boost_DATE_TIME_LIBRARY}
-#        ${Boost_REGEX_LIBRARY}
 # ---
         ${PQ}
-        ${PQXX}
 # ---
-        ${PROXYGENHTTPSERVER}
-        ${WANGLE}
         ${GLOG}
         ${GFLAGS}
         ${SSL}
@@ -64,18 +52,44 @@ set(LIBS
         ${CMAKE_THREAD_LIBS_INIT}
         ${D}
         ${SNAPPY}
+        ${IBERTY}
         ${JE}
         ${DL}
-        ${PROXYGEN}
-        ${FIZZ}
         ${SODIUM}
         ${Z}
-        ${FOLLY}
+        ${LZ4}
         ${LZMA}
         ${BZ2}
         ${ZSTD}
 )
 
-add_executable (${PROJECT_NAME} "server.cpp" "server.h" "ProvisioningAPI.cpp" "ProvisioningAPI.h" "spDataObject.h" "spDataObject.cpp" "AsVsHttpAPI.cpp" "Util.h" "DbConnection.h" "DbConnection.cpp" "spColumn.h" "spBaseObject.h" "spBaseObject.cpp")
-target_link_libraries(${PROJECT_NAME} ${LIBS})
+add_executable (${PROJECT_NAME}
+                "server.cpp" 
+                "server.h" 
+                "ProvisioningAPI.cpp" 
+                "ProvisioningAPI.h" 
+                "spDataObject.h" 
+                "spDataObject.cpp" 
+                "AsVsHttpAPI.cpp" 
+                "Util.h" 
+                "DbConnection.h" 
+                "DbConnection.cpp" 
+                "spColumn.h" 
+                "spBaseObject.h" 
+                "spBaseObject.cpp"
+)
 
+function(add_external_library NAME)
+	add_library(${NAME} STATIC IMPORTED)
+	set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${DEPS_LIB_DIR}/lib${NAME}.a)
+	target_link_libraries(${PROJECT_NAME} ${NAME})
+endfunction()
+
+add_external_library(proxygenhttpserver)
+add_external_library(proxygen)
+add_external_library(wangle)
+add_external_library(fizz)
+add_external_library(folly)
+add_external_library(pqxx) 
+
+target_link_libraries(${PROJECT_NAME} ${LIBS})

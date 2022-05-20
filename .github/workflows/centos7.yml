@@ -1,0 +1,61 @@
+name: CentOS7
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/ubuntu.yml'
+  pull_request:
+#    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+    workflow_dispatch:
+
+env:
+  MAKEFLAGS: -j4
+  CACHE_VER: 1
+  DEPS: deps
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container:
+      image: centos:7
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Install packages
+        run: |
+          yum -y update
+          yum -y install epel-release
+          yum -y install \
+          bison flex libcap-dev libevent-dev libiberty-dev libnuma-dev libsnappy-dev \
+          libsodium-dev libtool m4 make pkg-config unzip gperf libboost-all-dev \
+          libdouble-conversion-dev libgflags-dev libgoogle-glog-dev libjemalloc-dev \
+          binutils-dev libkrb5-dev liblz4-dev liblzma-dev libsasl2-dev libssl-dev \
+          libzstd-dev zlib1g-dev wget cmake g++ git
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create deps folder
+        run: |
+          mkdir ${{env.DEPS}}
+
+      - name: Process cache
+        uses: actions/cache@v2
+        with:
+          path: ${{env.DEPS}}
+          key:  centos7-v${{ env.CACHE_VER }}
+
+      - name: Configure
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+
+      - name: Build
+        run: |
+          cd build
+          make

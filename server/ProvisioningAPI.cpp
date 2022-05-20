@@ -76,9 +76,9 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
     {
         logError(400, e.what());
     }
-    catch (const pqxx::pqxx_exception& e)
+    catch (const pqxx::failure& e)
     {
-        logError(400, e.base().what());
+        logError(400, e.what());
     }
     catch (const std::exception& e)
     {

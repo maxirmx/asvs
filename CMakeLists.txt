@@ -7,117 +7,42 @@ include(ExternalProject)
 
 project ("stirshaken-asvs-server")
 
-SET (__WITH_BOOST OFF)
-SET (__WITH_PROXYGEN OFF)
-SET (__WITH_PQXX OFF)
+# Various locations for external projects
+set(DEPS ${CMAKE_CURRENT_SOURCE_DIR}/deps CACHE STRING "Dependencies' folder'")
+set(DEPS_INCLUDE_DIR ${DEPS}/include)
+set(DEPS_LIB_DIR ${DEPS}/lib)
+set(DEPS_BIN_DIR ${DEPS}/bin)
+set(DEPS_SBIN_DIR ${DEPS}/sbin)
 
-SET(LOAD_BOOST_SOURCES OFF)
-SET(LOAD_PROXYGEN_SOURCES OFF)
-SET(LOAD_PQXX_SOURCES OFF)
-
-SET(BUILD_BOOST OFF)
-SET(BUILD_PROXYGEN OFF)
-SET(BUILD_PQXX OFF)
-
-# ********************** Boost *********************
-SET(V_BOOST 1.74.0)
-SET(V_BOOST_ 1_74_0)
-SET(BOOST_PREFIX boost)
-
-if (${LOAD_BOOST_SOURCES})
-	ExternalProject_Add(boost
-		PREFIX ${BOOST_PREFIX}
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX}
-		URL https://dl.bintray.com/boostorg/release/${V_BOOST}/source/${BOOST_PREFIX}_${V_BOOST_}.tar.gz
-		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./bootstrap.sh"
-		BUILD_COMMAND ""
-		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./b2 -j4 -d1 --without-python --without-graph_parallel --without-mpi --prefix=/usr/local install"
-	)
-	SET (__WITH_BOOST ON)
-elseif (${BUILD_BOOST})
-	ExternalProject_Add(boost
-		PREFIX ${BOOST_PREFIX}
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX}
-		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./bootstrap.sh"
-		BUILD_COMMAND ""
-		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${BOOST_PREFIX} && ./b2 -j4 -d1 --without-python --without-graph_parallel --without-mpi --prefix=/usr/local install"
-	SET (__WITH_BOOST ON)
-	)
-endif()
-
-# ********************** Proxygen *********************
 SET(V_PROXYGEN 2020.11.16.00)
-SET(PROXYGEN_PREFIX proxygen)
+SET(V_PQXX 7.7.3)
 
-if (${LOAD_PROXYGEN_SOURCES})
-	ExternalProject_Add(proxygen
-		PREFIX ${PROXYGEN_PREFIX}
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}
-		URL https://github.com/facebook/proxygen/archive/v${V_PROXYGEN}.tar.gz 
-		PATCH_COMMAND sed s/\-DCMAKE_INSTALL_PREFIX=\"\$DEPS_DIR\"/\-DCMAKE_INSTALL_PREFIX=\"\$PREFIX\"/ < ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/build.sh > ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/b.sh 
-		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && chmod +x b.sh && ./b.sh -j 4 --prefix /usr/local"
-		BUILD_COMMAND ""
-		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && ./install.sh"
-	)
-	SET (__WITH_PROXYGEN ON)
-elseif (${BUILD_PROXYGEN})
-	ExternalProject_Add(proxygen
-		PREFIX ${PROXYGEN_PREFIX}
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}
-		PATCH_COMMAND sed s/\-DCMAKE_INSTALL_PREFIX=\"\$DEPS_DIR\"/\-DCMAKE_INSTALL_PREFIX=\"\$PREFIX\"/ < ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/build.sh > ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen/b.sh 
-		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && chmod +x b.sh && ./b.sh -j 4 --prefix /usr/local"
-		BUILD_COMMAND ""
-		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PROXYGEN_PREFIX}/proxygen && ./install.sh"
-	)
-	SET (__WITH_PROXYGEN ON)
-endif()
+
+ExternalProject_Add(proxygen-prj
+	PREFIX ${DEPS}
+	URL https://github.com/facebook/proxygen/archive/v${V_PROXYGEN}.tar.gz
+	URL_HASH SHA256=be617ce7ff8af12ab2008e5f49c2b0375b22919591cbae751c149d5de4c88200
+	SOURCE_DIR ${DEPS}/src/proxygen-src
+	DOWNLOAD_NO_PROGRESS true
+	UPDATE_COMMAND ""
+	PATCH_COMMAND sed s/\-DCMAKE_INSTALL_PREFIX=\"\$DEPS_DIR\"/\-DCMAKE_INSTALL_PREFIX=\"\$PREFIX\"/ < ${DEPS}/src/proxygen-src/proxygen/build.sh > ${DEPS}/src/proxygen-src/proxygen/b.sh
+	CONFIGURE_COMMAND  chmod +x ${DEPS}/src/proxygen-src/proxygen/b.sh
+	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/proxygen-src/proxygen ./b.sh -j 4 --prefix ${DEPS}
+	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/proxygen-src/proxygen ./install.sh
+)
 
 # ********************** PQXX *********************
-SET(V_PQXX 6.4.5)
-SET(PQXX_PREFIX pqxx)
+ExternalProject_Add(pqxx-prj
+	PREFIX ${DEPS}
+	URL https://github.com/jtv/libpqxx/archive/${V_PQXX}.tar.gz
+	URL_HASH SHA256=11e147bbe2d3024d68d29b38eab5d75899dbb6131e421a2dbf9f88bac9bf4b0d
+	SOURCE_DIR ${DEPS}/src/pqxx-src
+	DOWNLOAD_NO_PROGRESS true
+	UPDATE_COMMAND ""
+	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPS}
+)
 
-find_library(PQXX pqxx)
-
-if (${PQXX} STREQUAL "PQXX-NOTFOUND")
-
-#if (${LOAD_PQXX_SOURCES})
-	ExternalProject_Add(pqxx
-		PREFIX ${PQXX_PREFIX}
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}
-		URL https://github.com/jtv/libpqxx/archive/${V_PQXX}.tar.gz
-		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX} && mkdir -p release && cd release && cmake ../"
-		BUILD_COMMAND ""
-		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
-	)
-	SET (__WITH_PQXX ON)
-	SET (PQXX /usr/local/lib64/libpqxx.a)
-
-#elseif (${BUILD_PQXX})
-#	ExternalProject_Add(pqxx
-#		PREFIX ${PQXX_PREFIX}
-#		SOURCE_DIR ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}
-#		CONFIGURE_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX} && mkdir -p release && cd release && cmake ../"
-#		BUILD_COMMAND ""
-#		INSTALL_COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}/${PQXX_PREFIX}/release && make -j4 install"
-#	SET (__WITH_PQXX ON)
-#	)
-endif()
-
+include_directories(BEFORE ${DEPS_INCLUDE_DIR})
 add_subdirectory ("server")
 
-if (${__WITH_BOOST})
-	add_dependencies(server boost)
-	if (${__WITH_PROXYGEN})
-		add_dependencies(proxygen boost)
-	endif()
-endif()
-
-if (${__WITH_PROXYGEN})
-	add_dependencies(server proxygen)
-endif()
-
-
-if (${__WITH_PQXX})
-	add_dependencies(server pqxx)
-endif()
-
+add_dependencies(server proxygen-prj pqxx-prj)

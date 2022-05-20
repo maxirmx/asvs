@@ -23,7 +23,7 @@ void AsVsApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
     The X-RequestID transaction ID should be included in order to make possible the transaction traceability  in case of troubleshooting
     and fault analysis. If received, it will not be validated explicitly by server.If not received, it will be automatically generated 
     by STI - AS/VS service on request receipt. Received/Generated transaction ID will be returned back in the corresponding HTTP response 
-    in “X-RequestID” header.
+    in `X-RequestID` header.
 */
         XRequestID = headers.getSingleOrEmpty("X-RequestID");
         VLOG(1) << "[AS & VS HTTP API request] " << path << " XRequestID: '" << XRequestID << "'";
@@ -65,9 +65,9 @@ void AsVsApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
             The following headers are expected to be sent in all HTTP requests :
             RequestID       -- optional
             InstanceID      -- optional
-            Content-Type    -- mandatory Valid value is : “application/json”.
-            Accept          -- optional  If specified, has to contain “application/json” content type, otherwise HTTP request will be rejected with “406 Not Acceptable” HTTP Status Code.
-                                         If not specified, will be default handled as “application/json"
+            Content-Type    -- mandatory Valid value is : ï¿½application/jsonï¿½.
+            Accept          -- optional  If specified, has to contain ï¿½application/jsonï¿½ content type, otherwise HTTP request will be rejected with ï¿½406 Not Acceptableï¿½ HTTP Status Code.
+                                         If not specified, will be default handled as ï¿½application/json"
         */
         if (ContentType != "application/json")
         {
@@ -296,19 +296,19 @@ const string AsVsApiHandler::AsVsCode2AsVsText(uint16_t AsVsCode)
         AsVsText += "Missing request body.";
         break;
     case 4001:
-        AsVsText += "Missing mandatory parameter ‘%1’.";
+        AsVsText += "Missing mandatory parameter ï¿½%1ï¿½.";
         break;
     case 4002:
-        AsVsText += "Requested response body type ‘%1’ is not supported.";
+        AsVsText += "Requested response body type ï¿½%1ï¿½ is not supported.";
         break;
     case 4003:
         AsVsText += "Requested resource was not found.";
         break;
     case 4004:
-        AsVsText += "Unsupported request body type, expected ‘%1’.";
+        AsVsText += "Unsupported request body type, expected ï¿½%1ï¿½.";
         break;
     case 4005:
-        AsVsText += "Error: Invalid ‘%1’ parameter value : %2.";
+        AsVsText += "Error: Invalid ï¿½%1ï¿½ parameter value : %2.";
         break;
     case 4006:
         AsVsText += "Error: Failed to parse received message body : %1.";

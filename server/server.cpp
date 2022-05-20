@@ -39,13 +39,13 @@ int main(int argc, char* argv[])
 //      unique_ptr<DbInMemory> m = make_unique<DbInMemory>();
 //      m->loadDb();
    }
-  catch (const pqxx::pqxx_exception& e)
+  catch (const pqxx::failure& e)
   {
       if (FLAGS_postgres.empty())
           LOG(ERROR) << "Database connection using default parameters failed." << endl;
       else
           LOG(ERROR) << "Database connection defined by --postgres \"" << FLAGS_postgres << "\" failed." << endl;
-      LOG(ERROR) << "The engine said:" << endl << e.base().what() << endl;
+      LOG(ERROR) << "The engine said:" << endl << e.what() << endl;
       return -1;
   }
   catch (InternalError& e)
