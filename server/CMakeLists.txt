@@ -15,8 +15,6 @@ find_package( Boost 1.71 COMPONENTS context  date_time          REQUIRED )
 find_package( Threads                                           REQUIRED )
 
 find_library(Z                  z                               REQUIRED )
-find_library(SSL                ssl                             REQUIRED )
-find_library(CRYPTO             crypto                          REQUIRED )
 find_library(LZMA               lzma                            REQUIRED )
 find_library(BZ2                bz2                             REQUIRED )
 find_library(ZSTD               zstd                            REQUIRED )
@@ -34,6 +32,11 @@ find_library (GFLAGS            gflags                          REQUIRED )
 find_library (GLOG              glog                            REQUIRED )
 
 find_library(PQ                 pq                              REQUIRED )
+
+if(${IS_UBUNTU})
+        find_library(SSL                ssl                             REQUIRED )
+        find_library(CRYPTO             crypto                          REQUIRED )
+endif(${IS_UBUNTU})
 
 set(LIBS
         ${Boost_LIBRARIES}
@@ -79,15 +82,17 @@ add_external_library(wangle)
 add_external_library(fizz)
 add_external_library(folly)
 
-if(${IS_UBUNTU})
-        add_external_library(pqxx)
-else(${IS_UBUNTU})
-        add_external_library_64(pqxx)
-endif(${IS_UBUNTU})
-
 add_external_library(stirshaken)
 add_external_library(jwt)
 add_external_library(jansson)
 add_external_library(ks)
+
+if(${IS_UBUNTU})
+        add_external_library(pqxx)
+else(${IS_UBUNTU})
+        add_external_library_64(pqxx)
+        add_external_library(ssl)
+        add_external_library(crypto)
+endif(${IS_UBUNTU})
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
