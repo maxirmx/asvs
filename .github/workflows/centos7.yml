@@ -91,20 +91,20 @@ jobs:
                                                              --with-system --with-thread --with-date_time           \
                                                              --with-iostreams --prefix=/usr/local install    
 
-      - name: Load OpenSSL 1.1.1
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: |
-          cd bootstrap
-          wget https://ftp.openssl.org/source/openssl-${V_OPENSSL}.tar.gz -nv -O openssl.tar.gz
-          tar -xzf openssl.tar.gz
-          cd openssl-${V_OPENSSL}
-          scl enable devtoolset-9 -- ./config --prefix=/usr/local --libdir=lib  --openssldir=/etc/ssl no-shared zlib-dynamic
+#      - name: Load OpenSSL 1.1.1
+#        if: steps.cache-deps.outputs.cache-hit != 'true'
+#        run: |
+#          cd bootstrap
+#          wget https://ftp.openssl.org/source/openssl-${V_OPENSSL}.tar.gz -nv -O openssl.tar.gz
+#          tar -xzf openssl.tar.gz
+#          cd openssl-${V_OPENSSL}
+#          scl enable devtoolset-9 -- ./config --prefix=/usr/local --libdir=lib  --openssldir=/etc/ssl no-shared zlib-dynamic
 
-      - name: Install OpenSSL 1.1.1
-        run: |
-          cd bootstrap/openssl-${V_OPENSSL}
-          make
-          make install
+#      - name: Install OpenSSL 1.1.1
+#        run: |
+#          cd bootstrap/openssl-${V_OPENSSL}
+#          make
+#          make install
 
       - name: Configure
         run: |

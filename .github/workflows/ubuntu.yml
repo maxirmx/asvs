@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-#  MAKEFLAGS: -j4
-  CACHE_VER: 6
+  MAKEFLAGS: -j4
+  CACHE_VER: 7
   DEPS: deps
 
 jobs:
