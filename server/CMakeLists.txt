@@ -15,8 +15,8 @@ find_package( Boost 1.71 COMPONENTS context  date_time          REQUIRED )
 find_package( Threads                                           REQUIRED )
 
 find_library(Z                  z                               REQUIRED )
-#find_library(SSL                ssl                             REQUIRED )
-#find_library(CRYPTO             crypto                          REQUIRED )
+find_library(SSL                ssl                             REQUIRED )
+find_library(CRYPTO             crypto                          REQUIRED )
 find_library(LZMA               lzma                            REQUIRED )
 find_library(BZ2                bz2                             REQUIRED )
 find_library(ZSTD               zstd                            REQUIRED )
@@ -41,7 +41,8 @@ set(LIBS
         ${PQ}
 # ---
         ${GLOG} ${GFLAGS} ${SSL} ${Z} ${EVENT} ${CRYPTO} ${CMAKE_THREAD_LIBS_INIT}
-        ${D} ${SNAPPY} ${IBERTY} ${JE} ${DL} ${SODIUM} ${Z} ${LZ4} ${LZMA} ${BZ2} ${ZSTD}
+        ${SSL} ${CRYPTO} ${D} ${SNAPPY} ${IBERTY} ${JE} ${DL} ${SODIUM} ${Z} ${LZ4} 
+        ${LZMA} ${BZ2} ${ZSTD}
 )
 
 add_executable (${PROJECT_NAME}
@@ -88,7 +89,5 @@ add_external_library(stirshaken)
 add_external_library(jwt)
 add_external_library(jansson)
 add_external_library(ks)
-add_external_library(ssl)
-add_external_library(crypto)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
