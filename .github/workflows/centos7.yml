@@ -12,11 +12,12 @@ on:
     workflow_dispatch:
 
 env:
-  MAKEFLAGS: -j4
-  CACHE_VER: 2
+#  MAKEFLAGS: -j4
+  CACHE_VER: 3
   DEPS: deps
   V_BOOST: '1.74.0'
   V_BOOST_: 1_74_0
+  V_OPENSSL: '1.1.1k'
 
 jobs:
   build:
@@ -38,9 +39,10 @@ jobs:
           yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
           yum -y update
           yum -y install epel-release 
-          yum -y install double-conversion-devel jemalloc-devel glog-devel gflags-devel snappy-devel openssl-devel   \
-                         libevent-devel libsodium-devel gperf libzstd-devel xmlto xz-devel bzip2-devel python3 wget  \
-                         bison flex cmake3 lz4-devel sudo git postgresql-devel binutils-devel 
+          yum -y install double-conversion-devel jemalloc-devel glog-devel gflags-devel snappy-devel                    \
+                         libevent-devel libsodium-devel gperf libzstd-devel xmlto xz-devel bzip2-devel python3 wget     \
+                         bison flex cmake3 lz4-devel sudo git postgresql-devel binutils-devel autoconf automake libtool \
+                         libuuid-devel libatomic libcurl-devel perl-core pcre-devel pkgconfig
           yum clean all
 
       - name: Configure cmake
@@ -85,9 +87,24 @@ jobs:
       - name: Install boost
         run: |
           cd bootstrap/boost_${{ env.V_BOOST_ }}
-          scl enable devtoolset-9 -- ./b2 -j8 -d1 --with-context --with-filesystem --with-program_options --with-regex  \
-                                                                 --with-system --with-thread --with-date_time           \
-                                                                 --with-iostreams --prefix=/usr/local install    
+          scl enable devtoolset-9 -- ./b2 -d1 --with-context --with-filesystem --with-program_options --with-regex  \
+                                                             --with-system --with-thread --with-date_time           \
+                                                             --with-iostreams --prefix=/usr/local install    
+
+      - name: Load OpenSSL 1.1.1
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: |
+          cd bootstrap
+          wget https://ftp.openssl.org/source/openssl-${V_OPENSSL}.tar.gz -nv -O openssl.tar.gz
+          tar -xzf openssl.tar.gz
+          cd openssl-${V_OPENSSL}
+          scl enable devtoolset-9 -- ./config --prefix=/usr/local --libdir=lib  --openssldir=/etc/ssl no-shared zlib-dynamic
+
+      - name: Install OpenSSL 1.1.1
+        run: |
+          cd bootstrap/openssl-${V_OPENSSL}
+          make
+          make install
 
       - name: Configure
         run: |
@@ -98,4 +115,4 @@ jobs:
       - name: Build
         run: |
           cd build
-          scl enable devtoolset-9 -- make -j4
+          scl enable devtoolset-9 -- make 

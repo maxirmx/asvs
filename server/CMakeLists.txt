@@ -84,7 +84,9 @@ else(${IS_UBUNTU})
         add_external_library_64(pqxx)
 endif(${IS_UBUNTU})
 
+add_external_library(stirshaken)
 add_external_library(jwt)
 add_external_library(jansson)
+add_external_library(ks)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
