@@ -132,6 +132,6 @@ ExternalProject_Add(stirshaken-prj
 include_directories(BEFORE ${DEPS_INCLUDE_DIR})
 add_subdirectory ("server")
 
-add_dependencies(jwt-prj jansson-prj openssl-prj)
+add_dependencies(jwt-prj jansson-prj)
 add_dependencies(stirshaken-prj ks-prj jwt-prj)
 add_dependencies(server stirshaken-prj proxygen-prj pqxx-prj)
