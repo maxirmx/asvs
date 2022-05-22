@@ -72,16 +72,19 @@ function(add_external_library_64 NAME)
 	target_link_libraries(${PROJECT_NAME} ${NAME})
 endfunction()
 
-
 add_external_library(proxygenhttpserver)
 add_external_library(proxygen)
 add_external_library(wangle)
 add_external_library(fizz)
 add_external_library(folly)
+
 if(${IS_UBUNTU})
         add_external_library(pqxx)
 else(${IS_UBUNTU})
         add_external_library_64(pqxx)
 endif(${IS_UBUNTU})
+
+add_external_library(jwt)
+add_external_library(jansson)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})

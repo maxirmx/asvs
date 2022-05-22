@@ -17,7 +17,7 @@ DEFINE_int32(prov_api_http_port, 8080, "Provisioning API port");
 DEFINE_string(asvs_api_http_ip, "localhost", "AS&VS HTTP API IP/Hostname");
 DEFINE_int32(asvs_api_http_port, 8081, "AS&VS HTTP API port");
 
-DEFINE_string(postgres, "", "PostgresSql connection string (\"user=postgres host=localhost port=5432 dbname=urls_remap password=changeme\")");
+DEFINE_string(postgres, "", "PostgresSql connection string (\"user=postgres host=localhost port=5432 dbname=asvs password=postgres\")");
 
 DEFINE_int32(threads,0, "Number of threads used by AS&VS HTTP API. Zero means to default to the number of cores on this machine.");
 

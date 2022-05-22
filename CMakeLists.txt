@@ -18,6 +18,8 @@ set(DEPS_SBIN_DIR ${DEPS}/sbin)
 SET(V_PROXYGEN 2020.11.16.00)
 # V_PQXX 7.7.3  		# HASH 11e147bbe2d3024d68d29b38eab5d75899dbb6131e421a2dbf9f88bac9bf4b0d
 SET(V_PQXX 6.4.5)		# HASH 86921fdb0fe54495a79d5af2c96f2c771098c31e9b352d0834230fd2799ad362
+SET(V_JWT 1.13.1)
+SET(V_JANSSON 2.14)
 
 ExternalProject_Add(proxygen-prj
 	PREFIX ${DEPS}
@@ -42,6 +44,31 @@ ExternalProject_Add(pqxx-prj
 	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPS}
 )
 
+ExternalProject_Add(jansson-prj
+	PREFIX ${DEPS}
+	URL https://github.com/akheron/jansson/releases/download/v${V_JANSSON}/jansson-${V_JANSSON}.tar.gz
+	URL_HASH SHA256=5798d010e41cf8d76b66236cfb2f2543c8d082181d16bc3085ab49538d4b9929
+	SOURCE_DIR ${DEPS}/src/jansson-src
+	DOWNLOAD_NO_PROGRESS true
+	UPDATE_COMMAND ""
+	CONFIGURE_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/jansson-src ./configure --prefix=${DEPS}
+	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/jansson-src make
+	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/jansson-src make install
+)
+
+ExternalProject_Add(jwt-prj
+	PREFIX ${DEPS}
+	URL https://github.com/benmcollins/libjwt/archive/refs/tags/v${V_JWT}.tar.gz
+	URL_HASH SHA256=4df55ac89c6692adaf3badb43daf3241fd876612c9ab627e250dfc4bb59993d9
+	SOURCE_DIR ${DEPS}/src/jwt-src
+	DOWNLOAD_NO_PROGRESS t
+	UPDATE_COMMAND ""
+	CONFIGURE_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/jwt-src autoreconf -i
+	COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/jwt-src ${CMAKE_COMMAND} -E env PKG_CONFIG_PATH=${DEPS}/lib/pkgconfig ./configure --prefix=${DEPS} 
+	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/jwt-src make
+	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/jwt-src make install
+)
+
 execute_process( COMMAND "awk" "-F=" "/^NAME/{print $2}" "/etc/os-release"
 				 RESULT_VARIABLE OSTYPE_RES OUTPUT_VARIABLE OSTYPE_TXT )
 if(OSTYPE_RES EQUAL 0)
@@ -63,4 +90,5 @@ endif(OSTYPE_RES EQUAL 0)
 include_directories(BEFORE ${DEPS_INCLUDE_DIR})
 add_subdirectory ("server")
 
-add_dependencies(server proxygen-prj pqxx-prj)
+add_dependencies(jwt-prj jansson-prj)
+add_dependencies(server proxygen-prj pqxx-prj jwt-prj)
