@@ -124,7 +124,8 @@ ExternalProject_Add(stirshaken-prj
 	SOURCE_DIR ${DEPS}/src/stirshaken-src
 	UPDATE_COMMAND ""
 	CONFIGURE_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/stirshaken-src autoreconf -i
-	COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/stirshaken-src ${CMAKE_COMMAND} -E env PKG_CONFIG_PATH=${DEPS_PKG_DIR} CPPFLAGS=-I${DEPS_INCLUDE_DIR} KS_LIBS=${KS_LIBS} ./configure --prefix=${DEPS} 
+	COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/stirshaken-src ${CMAKE_COMMAND} 
+							 -E env PKG_CONFIG_PATH=${DEPS_PKG_DIR} CPPFLAGS=-I${DEPS_INCLUDE_DIR} KS_LIBS=${KS_LIBS} LDFLAGS=-lm ./configure --prefix=${DEPS} 
 	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/stirshaken-src make
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/stirshaken-src make install
 )
