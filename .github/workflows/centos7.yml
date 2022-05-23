@@ -12,7 +12,7 @@ on:
     workflow_dispatch:
 
 env:
-#  MAKEFLAGS: -j4
+  MAKEFLAGS: -j4
   CACHE_VER: 3
   DEPS: deps
   V_BOOST: '1.74.0'

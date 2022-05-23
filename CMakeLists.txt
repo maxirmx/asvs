@@ -110,7 +110,7 @@ ExternalProject_Add(openssl-prj
 	SOURCE_DIR ${DEPS}/src/openssl-src
 	DOWNLOAD_NO_PROGRESS true
 	UPDATE_COMMAND ""
-	CONFIGURE_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/openssl-src ./config --prefix=${DEPS} --openssldir=${DEPS}/ssl zlib-dynamic
+	CONFIGURE_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/openssl-src ./config --prefix=${DEPS} --libdir=lib --openssldir=${DEPS}/ssl zlib-dynamic
 	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/openssl-src make
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/openssl-src make install
 )
