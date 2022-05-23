@@ -13,7 +13,7 @@ on:
 
 env:
   MAKEFLAGS: -j4
-  CACHE_VER: 4
+  CACHE_VER: 8
   DEPS: deps
 
 jobs:
@@ -27,11 +27,12 @@ jobs:
         run: |
           sudo apt-get -y update
           sudo apt-get -y install \
-          bison flex libcap-dev libevent-dev libiberty-dev libnuma-dev libsnappy-dev \
-          libsodium-dev libtool m4 make pkg-config unzip gperf libboost-all-dev \
-          libdouble-conversion-dev libgflags-dev libgoogle-glog-dev libjemalloc-dev \
-          binutils-dev libkrb5-dev liblz4-dev liblzma-dev libsasl2-dev libssl-dev \
-          libzstd-dev zlib1g-dev wget cmake g++
+          bison flex libcap-dev libevent-dev libiberty-dev libnuma-dev libsnappy-dev  \
+          libsodium-dev libtool m4 make pkg-config unzip gperf libboost-all-dev       \
+          libdouble-conversion-dev libgflags-dev libgoogle-glog-dev libjemalloc-dev   \
+          binutils-dev libkrb5-dev liblz4-dev liblzma-dev libsasl2-dev libssl-dev     \
+          libzstd-dev zlib1g-dev wget cmake autoconf automake libcurl4-openssl-dev    \
+          uuid-dev g++ gnupg2 lsb-release
 
       - name: Checkout
         uses: actions/checkout@v3
