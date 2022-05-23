@@ -3,7 +3,6 @@
 // spAccountInfo
 // spGatewayInfo
 // spTnInfo
-// spCertInfo
 
 class spCustomerInfo: public spBaseObject
 {
@@ -54,15 +53,3 @@ public:
 private:
     void __proto(void);
 };
-
-class spCertInfo: public spBaseObject
-{
-public:
-    spCertInfo(const std::string& body);
-    spCertInfo(const pqxx::row& r);
-
-private:
-    void __proto(void);
-};
-
-

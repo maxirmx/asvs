@@ -296,19 +296,19 @@ const string AsVsApiHandler::AsVsCode2AsVsText(uint16_t AsVsCode)
         AsVsText += "Missing request body.";
         break;
     case 4001:
-        AsVsText += "Missing mandatory parameter �%1�.";
+        AsVsText += "Missing mandatory parameter '%1'.";
         break;
     case 4002:
-        AsVsText += "Requested response body type �%1� is not supported.";
+        AsVsText += "Requested response body type '%1' is not supported.";
         break;
     case 4003:
         AsVsText += "Requested resource was not found.";
         break;
     case 4004:
-        AsVsText += "Unsupported request body type, expected �%1�.";
+        AsVsText += "Unsupported request body type, expected '%1'.";
         break;
     case 4005:
-        AsVsText += "Error: Invalid �%1� parameter value : %2.";
+        AsVsText += "Error: Invalid '%1' parameter value : %2.";
         break;
     case 4006:
         AsVsText += "Error: Failed to parse received message body : %1.";

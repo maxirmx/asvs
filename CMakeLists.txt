@@ -54,16 +54,6 @@ ExternalProject_Add(proxygen-prj
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/proxygen-src/proxygen ./install.sh
 )
 
-ExternalProject_Add(pqxx-prj
-	PREFIX ${DEPS}
-	URL https://github.com/jtv/libpqxx/archive/${V_PQXX}.tar.gz
-	URL_HASH SHA256=86921fdb0fe54495a79d5af2c96f2c771098c31e9b352d0834230fd2799ad362
-	SOURCE_DIR ${DEPS}/src/pqxx-src
-	DOWNLOAD_NO_PROGRESS true
-	UPDATE_COMMAND ""
-	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPS}
-)
-
 ExternalProject_Add(jansson-prj
 	PREFIX ${DEPS}
 	URL https://github.com/akheron/jansson/releases/download/v${V_JANSSON}/jansson-${V_JANSSON}.tar.gz
@@ -130,14 +120,32 @@ ExternalProject_Add(stirshaken-prj
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/stirshaken-src make install
 )
 
-include_directories(BEFORE ${DEPS_INCLUDE_DIR})
-add_subdirectory ("server")
-
 if(${IS_UBUNTU})
-	add_dependencies(jwt-prj jansson-prj)
+	set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPS})
+	include_directories(BEFORE ${DEPS_INCLUDE_DIR})
 else(${IS_UBUNTU})
-	add_dependencies(jwt-prj jansson-prj openssl-prj)
+	set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPS} -DCMAKE_PREFIX_PATH=/usr/pgsql-10)
+	include_directories(BEFORE ${DEPS_INCLUDE_DIR} /usr/pgsql-10/include)
 endif(${IS_UBUNTU})
 
+ExternalProject_Add(pqxx-prj
+	PREFIX ${DEPS}
+	URL https://github.com/jtv/libpqxx/archive/${V_PQXX}.tar.gz
+	URL_HASH SHA256=86921fdb0fe54495a79d5af2c96f2c771098c31e9b352d0834230fd2799ad362
+	SOURCE_DIR ${DEPS}/src/pqxx-src
+	DOWNLOAD_NO_PROGRESS true
+	UPDATE_COMMAND ""
+	CMAKE_ARGS ${CMAKE_ARGS}
+)
+
+add_subdirectory ("server")
+
+if(NOT ${IS_UBUNTU})
+	add_dependencies(proxygen-prj openssl-prj)
+	add_dependencies(jwt-prj openssl-prj)
+	add_dependencies(ks-prj openssl-prj)
+endif(${IS_UBUNTU})
+
+add_dependencies(jwt-prj jansson-prj)
 add_dependencies(stirshaken-prj ks-prj jwt-prj)
 add_dependencies(server stirshaken-prj proxygen-prj pqxx-prj)

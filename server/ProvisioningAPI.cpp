@@ -15,7 +15,16 @@ void ProvApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
         auto path = message->getPath();
         VLOG(1) << "[Provisioning API request] " << path << endl;
 
-        waiting_post = true;
+        if (path == "/api/stop") 
+        {
+            logError(200, "Stop receieved, exiting.");
+            raise(SIGTERM);
+
+        }
+        else 
+        {
+            waiting_post = true;
+        }
     }
     catch (const std::exception& e)
     {
@@ -47,9 +56,6 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
         else if (path == "/api/gateway_ip_create")  r = gwIpCreate(post_body);
         else if (path == "/api/gateway_ip_update")  r = gwIpUpdate(post_body);
         else if (path == "/api/gateway_ip_delete")  r = gwIpDelete(post_body);
-        else if (path == "/api/cert_create")        r = certCreate(post_body);
-        else if (path == "/api/cert_update")        r = certUpdate(post_body);
-        else if (path == "/api/cert_delete")        r = certDelete(post_body);
         else if (path == "/api/tn_create")          r = tnCreate(post_body);
         else if (path == "/api/tn_update")          r = tnUpdate(post_body);
         else if (path == "/api/tn_delete")          r = tnDelete(post_body);
@@ -62,7 +68,6 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
                 .status(200, HTTPMessage::getDefaultReason(200))
                 .body(r)
                 .send();
-
         }
     }
     catch (const AsVsException& e)
@@ -195,24 +200,6 @@ string ProvApiHandler::gwIpDelete(const string& body)
 {
     spGatewayIpInfo spIpInfo(body);
     return spIpInfo.__delete();
-}
-
-string ProvApiHandler::certCreate(const string& body)
-{
-    spCertInfo spCInfo(body);
-    return spCInfo.__insert();
-}
-
-string ProvApiHandler::certUpdate(const string& body)
-{
-    spCertInfo spCInfo(body);
-    return spCInfo.__update();
-}
-
-string ProvApiHandler::certDelete(const string& body)
-{
-    spCertInfo spCInfo(body);
-    return spCInfo.__delete();
 }
 
 string ProvApiHandler::tnCreate(const string& body)

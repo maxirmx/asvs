@@ -13,11 +13,12 @@ on:
 
 env:
   MAKEFLAGS: -j4
-  CACHE_VER: 3
+  CACHE_VER: 4
   DEPS: deps
   V_BOOST: '1.74.0'
   V_BOOST_: 1_74_0
   V_OPENSSL: '1.1.1k'
+  PGPASSWORD: postgres
 
 jobs:
   build:
@@ -28,6 +29,23 @@ jobs:
         shell: bash
     container:
       image: centos:7
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432    
     strategy:
       fail-fast: false
     steps:
@@ -37,12 +55,11 @@ jobs:
           yum -y remove git
           yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
           yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-          yum -y update
           yum -y install epel-release 
           yum -y install double-conversion-devel jemalloc-devel glog-devel gflags-devel snappy-devel                    \
                          libevent-devel libsodium-devel gperf libzstd-devel xmlto xz-devel bzip2-devel python3 wget     \
-                         bison flex cmake3 lz4-devel sudo git postgresql-devel binutils-devel autoconf automake libtool \
-                         libuuid-devel libatomic libcurl-devel perl-core pcre-devel pkgconfig
+                         bison flex cmake3 lz4-devel sudo git binutils-devel autoconf automake libtool                  \
+                         libuuid-devel libatomic libcurl-devel perl-core pcre-devel pkgconfig postgresql10-devel
           yum clean all
 
       - name: Configure cmake
@@ -116,3 +133,13 @@ jobs:
         run: |
           cd build
           scl enable devtoolset-9 -- make 
+
+      - name: Smoke test
+        run: |
+          psql -h postgres -U postgres -d postgres -f db.scripts/db.init.sql
+          build/server/server -postgres "user=postgres host=postgres port=5432 dbname=postgres password=postgres" \
+                              -alsologtostderr  &
+          sleep 2
+          curl --header "Content-Type: application/json"  http://localhost:8080/api/stop
+          psql -h postgres -U postgres -d postgres -f db.scripts/db.delete.sql
+          psql -h postgres -U postgres -d postgres -f db.scripts/db.drop.sql

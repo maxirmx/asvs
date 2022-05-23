@@ -15,34 +15,33 @@ void spCustomerInfo::__proto(void)
     {
         {"sp_customer_uuid",    &spBaseObject::__crt_pt<spStringColumn,  std::string>},
         {"active",              &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
-        {"as_started_on",       &spBaseObject::__crt_pt<spTimeColumn,    std::string>},
-        {"vs_started_on",       &spBaseObject::__crt_pt<spTimeColumn,    std::string>},
+        {"started_on",          &spBaseObject::__crt_pt<spTimeColumn,    std::string>},
         {"modified_on",         &spBaseObject::__crt_pt<spTimeColumn,    std::string>},
-        {"as_expired_on",       &spBaseObject::__crt_pt<spTimeColumn,    std::string>},
-        {"vs_expired_on",       &spBaseObject::__crt_pt<spTimeColumn,    std::string>},
-        {"as_cps_limit",        &spBaseObject::__crt_pt<spInt32Column,   int32_t>    },
-        {"vs_cps_limit",        &spBaseObject::__crt_pt<spInt32Column,   int32_t>    },
+        {"expired_on",          &spBaseObject::__crt_pt<spTimeColumn,    std::string>},
+        {"cps_limit",           &spBaseObject::__crt_pt<spInt32Column,   int32_t>    },
         {"as_enabled",          &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
         {"vs_enabled",          &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
-        {"sp_customer_name",    &spBaseObject::__crt_pt<spStringColumn,  std::string>}
+        {"include_cname",       &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
+        {"include_lrn",         &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
+        {"include_dnc",         &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
+        {"sdnc_lrn_replacement",&spBaseObject::__crt_pt<spStringColumn,  std::string>}
     };
 
     proto_fields_pq =
     {
         {"sp_customer_uuid",    &spBaseObject::__crt_pq<spStringColumn,  std::string>},
         {"active",              &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
-        {"as_started_on",       &spBaseObject::__crt_pq<spTimeColumn,    std::string>},
-        {"vs_started_on",       &spBaseObject::__crt_pq<spTimeColumn,    std::string>},
+        {"started_on",          &spBaseObject::__crt_pq<spTimeColumn,    std::string>},
         {"modified_on",         &spBaseObject::__crt_pq<spTimeColumn,    std::string>},
-        {"as_expired_on",       &spBaseObject::__crt_pq<spTimeColumn,    std::string>},
-        {"vs_expired_on",       &spBaseObject::__crt_pq<spTimeColumn,    std::string>},
-        {"as_cps_limit",        &spBaseObject::__crt_pq<spInt32Column,   int32_t>    },
-        {"vs_cps_limit",        &spBaseObject::__crt_pq<spInt32Column,   int32_t>    },
+        {"expired_on",          &spBaseObject::__crt_pq<spTimeColumn,    std::string>},
+        {"cps_limit",           &spBaseObject::__crt_pq<spInt32Column,   int32_t>    },
         {"as_enabled",          &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
         {"vs_enabled",          &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
-        {"sp_customer_name",    &spBaseObject::__crt_pq<spStringColumn,  std::string>}
+        {"include_cname",       &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
+        {"include_lrn",         &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
+        {"include_dnc",         &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
+        {"sdnc_lrn_replacement",&spBaseObject::__crt_pq<spStringColumn,  std::string>}
     };
-
 }
 
 spCustomerInfo::spCustomerInfo(const string& b): spBaseObject("sp_customers", "sp_customer_uuid")
@@ -116,9 +115,13 @@ void spAccountInfo::__proto(void)
         {"cps_limit",                       &spBaseObject::__crt_pt <spInt32Column, int32_t> },
         {"as_enabled",                      &spBaseObject::__crt_pt <spBoolColumn,  bool>    },
         {"vs_enabled",                      &spBaseObject::__crt_pt <spBoolColumn,  bool>    },
-        {"sp_name",                         &spBaseObject::__crt_pt <spStringColumn, string> },
+        {"include_cname",                   &spBaseObject::__crt_pt <spBoolColumn,  bool>    },
+        {"include_lrn",                     &spBaseObject::__crt_pt <spBoolColumn,  bool>    },
+        {"include_dnc",                     &spBaseObject::__crt_pt <spBoolColumn,  bool>    },
         {"default_att_level_with_sp_ani",   &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"default_att_level_wo_sp_ani",     &spBaseObject::__crt_pt <spStringColumn, string> }
+        {"default_att_level_wo_sp_ani",     &spBaseObject::__crt_pt <spStringColumn, string> },
+        {"priv_key",                        &spBaseObject::__crt_pt <spStringColumn, string> },
+        {"pem_file_path",                   &spBaseObject::__crt_pt <spStringColumn, string> }
     };
 
     proto_fields_pq =
@@ -131,9 +134,13 @@ void spAccountInfo::__proto(void)
         {"cps_limit",                       &spBaseObject::__crt_pq <spInt32Column,  int32_t>},
         {"as_enabled",                      &spBaseObject::__crt_pq <spBoolColumn,   bool>   },
         {"vs_enabled",                      &spBaseObject::__crt_pq <spBoolColumn,   bool>   },
-        {"sp_name",                         &spBaseObject::__crt_pq <spStringColumn, string> },
+        {"include_cname",                   &spBaseObject::__crt_pq <spBoolColumn,   bool>   },
+        {"include_lrn",                     &spBaseObject::__crt_pq <spBoolColumn,   bool>   },
+        {"include_dnc",                     &spBaseObject::__crt_pq <spBoolColumn,   bool>   },
         {"default_att_level_with_sp_ani",   &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"default_att_level_wo_sp_ani",     &spBaseObject::__crt_pq <spStringColumn, string> }
+        {"default_att_level_wo_sp_ani",     &spBaseObject::__crt_pq <spStringColumn, string> },
+        {"priv_key",                        &spBaseObject::__crt_pq <spStringColumn, string> },
+        {"pem_file_path",                   &spBaseObject::__crt_pq <spStringColumn, string> }
     };
 }
 
@@ -166,7 +173,6 @@ void spGatewayIpInfo::__proto(void)
         {"sp_account_uuid",                 &spBaseObject::__crt_pq <spStringColumn, string> },
         {"gateway_ip",                      &spBaseObject::__crt_pq <spStringColumn, string> }
     };
-
 }
 
 spGatewayIpInfo::spGatewayIpInfo(const string& b): spBaseObject("sp_gateway_ip", "sp_gateway_ip_uuid")
@@ -200,7 +206,6 @@ void spTnInfo::__proto(void)
          {"tn",                           &spBaseObject::__crt_pq <spStringColumn, string> },
          {"modified_on",                  &spBaseObject::__crt_pq <spTimeColumn,   string> }
     };
-
 }
 
 spTnInfo::spTnInfo(const string& b): spBaseObject("sp_tn", "sp_tn_uuid")
@@ -214,43 +219,3 @@ spTnInfo::spTnInfo(const pqxx::row& r): spBaseObject("sp_tn", "sp_tn_uuid")
    __proto();
    __rmpIUS(r);
 }
-
-// --------------------------------------------------------------------------------------------------------------------------
-
-void spCertInfo::__proto(void)
-{
-    proto_fields_pt =
-    {
-        {"sp_cert_uuid",    &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"sp_account_uuid", &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"is_default",      &spBaseObject::__crt_pt <spBoolColumn,   bool>   },
-        {"priv_key",        &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"pem",             &spBaseObject::__crt_pt <spStringColumn, string> },
-        {"modified_on",     &spBaseObject::__crt_pt <spTimeColumn,   string> }
-    };
-
-    proto_fields_pq =
-    {
-        {"sp_cert_uuid",    &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"sp_account_uuid", &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"is_default",      &spBaseObject::__crt_pq <spBoolColumn,   bool>   },
-        {"priv_key",        &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"pem",             &spBaseObject::__crt_pq <spStringColumn, string> },
-        {"modified_on",     &spBaseObject::__crt_pq <spTimeColumn,   string> }
-    };
-}
-
-
-spCertInfo::spCertInfo(const string& b): spBaseObject("sp_cert", "sp_cert_uuid")
-{
-    __proto();
-    __rmpINT(b);
-}
-
-spCertInfo::spCertInfo(const pqxx::row& r): spBaseObject("sp_cert", "sp_cert_uuid")
-{
-    __proto();
-    __rmpIUS(r);
-}
-
-

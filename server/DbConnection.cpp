@@ -46,7 +46,6 @@ public:
 	std::unordered_map<std::string, std::shared_ptr<spAccountInfo>> acMap;
 	std::unordered_map<std::string, std::shared_ptr<spGatewayIpInfo>> gwIpMap;
 	std::unordered_map<std::string, std::shared_ptr<spTnInfo>> tnMap;
-	std::unordered_map<std::string, std::shared_ptr<spCertInfo>> crMap;
 };
 
 
@@ -72,10 +71,6 @@ void DbInMemory::loadDb(void)
 	r = DbConnection::d->exec("SELECT * FROM sp_tn");
 	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spTnInfo>(row); }
 	LOG(INFO) << "Loaded " << r.size() << " records from sp_tn.";
-
-	r = DbConnection::d->exec("SELECT * FROM sp_cert");
-	for (auto row = r.begin(); row != r.end(); row++) { auto n = make_shared<spCertInfo>(row); }
-	LOG(INFO) << "Loaded " << r.size() << " records from sp_cert.";
 }
 
 

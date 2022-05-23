@@ -13,15 +13,32 @@ on:
 
 env:
   MAKEFLAGS: -j4
-  CACHE_VER: 8
+  CACHE_VER: 9
   DEPS: deps
+  PGPASSWORD: postgres
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
+    # Service containers to run 
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432    
     steps:
       - name: Install packages
         run: |
@@ -57,3 +74,13 @@ jobs:
         run: |
           cd build
           make
+
+      - name: Smoke test
+        run: |
+          psql -h localhost -U postgres -d postgres -f db.scripts/db.init.sql
+          build/server/server -postgres "user=postgres host=localhost port=5432 dbname=postgres password=postgres" \
+                              -alsologtostderr  &
+          sleep 2
+          curl --header "Content-Type: application/json"  http://localhost:8080/api/stop
+          psql -h localhost -U postgres -d postgres -f db.scripts/db.delete.sql
+          psql -h localhost -U postgres -d postgres -f db.scripts/db.drop.sql
