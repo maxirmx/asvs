@@ -3,4 +3,4 @@
 out/*
 deps/*
 build/*
-test/shunit2/*
+tests/shunit2/*

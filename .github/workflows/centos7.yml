@@ -128,4 +128,6 @@ jobs:
 
       - name: Run tests
         timeout-minutes: 3
+        env:
+          DB_HOST:postgres        
         run:  tests/tests.sh
