@@ -1,6 +1,6 @@
-.vs/*
+.vs/
 .vscode/
-out/*
-deps/*
-build/*
-tests/shunit2/*
+out/
+deps/
+build/
+tests/shunit2/
