@@ -24,7 +24,7 @@ void spCustomerInfo::__proto(void)
         {"include_cname",       &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
         {"include_lrn",         &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
         {"include_dnc",         &spBaseObject::__crt_pt<spBoolColumn,    bool>       },
-        {"sdnc_lrn_replacement",&spBaseObject::__crt_pt<spStringColumn,  std::string>}
+        {"dnc_lrn_replacement", &spBaseObject::__crt_pt<spStringColumn,  std::string>}
     };
 
     proto_fields_pq =
@@ -40,7 +40,7 @@ void spCustomerInfo::__proto(void)
         {"include_cname",       &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
         {"include_lrn",         &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
         {"include_dnc",         &spBaseObject::__crt_pq<spBoolColumn,    bool>       },
-        {"sdnc_lrn_replacement",&spBaseObject::__crt_pq<spStringColumn,  std::string>}
+        {"dnc_lrn_replacement", &spBaseObject::__crt_pq<spStringColumn,  std::string>}
     };
 }
 
