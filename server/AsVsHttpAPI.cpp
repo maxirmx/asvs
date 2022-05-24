@@ -186,6 +186,7 @@ void AsVsApiHandler::yeildError(uint16_t AsVsCode, const string& msg, const stri
 
 const string AsVsApiHandler::signing(const string& body)
 {
+    
     return "{ \"msg\": \"Thank you for the fish\"}";
 }
 

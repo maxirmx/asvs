@@ -10,6 +10,7 @@ using folly::SocketAddress;
 
 #include "ProvisioningAPI.h"
 #include "AsVsHttpAPI.h"
+#include "StirShakenAPI.h"
 
 DEFINE_string(prov_api_http_ip, "localhost", "Provisioning API IP/Hostname");
 DEFINE_int32(prov_api_http_port, 8080, "Provisioning API port");
@@ -37,8 +38,16 @@ int main(int argc, char* argv[])
       DbConnection::d = make_unique<DbConnection>(FLAGS_postgres);
       LOG(INFO) << DbConnection::d->describe();
 //      unique_ptr<DbInMemory> m = make_unique<DbInMemory>();
-//      m->loadDb();
+//      m.loadDb();
+      auto api = StirShakenAPI::getAPI();
+      api.initialize();
+
    }
+  catch (const StirShakenException& e)
+  {
+      LOG(ERROR) << "stirshaken initialization error " << e.which() << "'" << e.what() << "'" << endl;
+      return -1;
+  }
   catch (const pqxx::failure& e)
   {
       if (FLAGS_postgres.empty())
@@ -132,6 +141,6 @@ int main(int argc, char* argv[])
   asvs_api_server.stop();
   asvs_api_thread.join();
 
-    LOG(INFO) << "Server shutdown" << std::endl;
+  LOG(INFO) << "Server shutdown" << std::endl;
   return 0;
   }

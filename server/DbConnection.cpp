@@ -40,7 +40,6 @@ class DbInMemory
 public:
 	void loadDb(void);
 
-
 	std::unordered_map<std::string, std::shared_ptr<spCustomerInfo>> cuMap;
 	std::unordered_map<std::string, std::shared_ptr<spCustomerIpInfo>> cuIpMap;
 	std::unordered_map<std::string, std::shared_ptr<spAccountInfo>> acMap;

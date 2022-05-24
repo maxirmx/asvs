@@ -31,6 +31,9 @@ find_library(IBERTY             iberty                  REQUIRED )
 find_library (GFLAGS            gflags                  REQUIRED )
 find_library (GLOG              glog                    REQUIRED )
 
+find_library (UUID              uuid                    REQUIRED )
+find_library (CURL              curl                    REQUIRED )
+
 
 if(${IS_UBUNTU})
         find_library(SSL        ssl     REQUIRED )
@@ -47,7 +50,7 @@ set(LIBS
 # ---
         ${GLOG} ${GFLAGS} ${SSL} ${Z} ${EVENT} ${CRYPTO} ${CMAKE_THREAD_LIBS_INIT}
         ${SSL} ${CRYPTO} ${D} ${SNAPPY} ${IBERTY} ${JE} ${DL} ${SODIUM} ${Z} ${LZ4} 
-        ${LZMA} ${BZ2} ${ZSTD}
+        ${LZMA} ${BZ2} ${ZSTD} ${UUID} ${CURL}
 )
 
 add_executable (${PROJECT_NAME}
@@ -64,6 +67,8 @@ add_executable (${PROJECT_NAME}
                 "spColumn.h"
                 "spBaseObject.h"
                 "spBaseObject.cpp"
+                "StirShakenAPI.h"
+                "StirShakenAPI.cpp"
 )
 
 function(add_external_library NAME)
