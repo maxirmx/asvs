@@ -40,6 +40,8 @@ if(${IS_UBUNTU})
         find_library(CRYPTO     crypto  REQUIRED )
         find_library(PQ         pq      REQUIRED)
 else (${IS_UBUNTU})
+        find_library(SSL        ssl     REQUIRED        HINTS /lib64)
+        find_library(CRYPTO     crypto  REQUIRED        HINTS /lib64)
         find_library(PQ         pq      REQUIRED        HINTS /usr/pgsql-10/lib)
 endif(${IS_UBUNTU})
 

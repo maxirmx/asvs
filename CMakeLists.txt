@@ -140,11 +140,11 @@ ExternalProject_Add(pqxx-prj
 
 add_subdirectory ("server")
 
-if(NOT ${IS_UBUNTU})
-	add_dependencies(proxygen-prj openssl-prj)
-	add_dependencies(jwt-prj openssl-prj)
-	add_dependencies(ks-prj openssl-prj)
-endif(NOT ${IS_UBUNTU})
+#if(NOT ${IS_UBUNTU})
+#	add_dependencies(proxygen-prj openssl-prj)
+#	add_dependencies(jwt-prj openssl-prj)
+#	add_dependencies(ks-prj openssl-prj)
+#endif(NOT ${IS_UBUNTU})
 
 add_dependencies(jwt-prj jansson-prj)
 add_dependencies(stirshaken-prj ks-prj jwt-prj)

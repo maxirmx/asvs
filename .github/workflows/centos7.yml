@@ -115,10 +115,11 @@ jobs:
           wget https://ftp.openssl.org/source/openssl-${V_OPENSSL}.tar.gz -nv -O openssl.tar.gz
           tar -xzf openssl.tar.gz
           cd openssl-${V_OPENSSL}
-          scl enable devtoolset-9 -- ./config --prefix=/usr/local --libdir=lib64  --openssldir=/etc/ssl zlib-dynamic
+          scl enable devtoolset-9 -- ./config  --openssldir=/etc/ssl zlib-dynamic
 
       - name: Install OpenSSL 1.1.1
         run: |
+          yum -y remove openssl
           cd bootstrap/openssl-${V_OPENSSL}
           make
           make install
