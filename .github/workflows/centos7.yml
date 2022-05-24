@@ -108,21 +108,6 @@ jobs:
                                                              --with-system --with-thread --with-date_time           \
                                                              --with-iostreams --prefix=/usr/local install    
 
-#      - name: Load OpenSSL 1.1.1
-#        if: steps.cache-deps.outputs.cache-hit != 'true'
-#        run: |
-#          cd bootstrap
-#          wget https://ftp.openssl.org/source/openssl-${V_OPENSSL}.tar.gz -nv -O openssl.tar.gz
-#          tar -xzf openssl.tar.gz
-#          cd openssl-${V_OPENSSL}
-#          scl enable devtoolset-9 -- ./config --prefix=/usr/local --libdir=lib  --openssldir=/etc/ssl zlib-dynamic
-
-#      - name: Install OpenSSL 1.1.1
-#        run: |
-#          cd bootstrap/openssl-${V_OPENSSL}
-#          make
-#          make install
-
       - name: Configure
         run: |
           mkdir build
@@ -134,19 +119,13 @@ jobs:
           cd build
           scl enable devtoolset-9 -- make 
 
-      - name: Smoke test
-        run: |
-          psql -h postgres -U postgres -d postgres -f db.scripts/db.init.sql
-          build/server/server -postgres "user=postgres host=postgres port=5432 dbname=postgres password=postgres" &
-          sleep 2
-          curl --header "Content-Type: application/json" --data  "{ \"sp_customer_uuid\": \"4f4867be-0001-4670-9148-3a9f5c70016f\", \"dnc_lrn_replacement\":\"LRN1\", \"started_on\":\"1917-08-01 12:15:01\", \"expired_on\":\"2199-12-31 15:12:59\", \"active\": true, \"cps_limit\": 12 }" http://localhost:8080/api/customer_create          
-          curl --header "Content-Type: application/json"  http://localhost:8080/api/stop
-          psql -h postgres -U postgres -d postgres -f db.scripts/db.delete.sql
-          psql -h postgres -U postgres -d postgres -f db.scripts/db.drop.sql
-
       - name: Checkout shell test framework
         uses: actions/checkout@v2
         with:
           repository: kward/shunit2
-          path: ${{github.workspace}}/tests/shunit2
+          path: tests/shunit2
           fetch-depth: 1
+
+      - name: Run tests
+        timeout-minutes: 3
+        run:  tests/tests.sh

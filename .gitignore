@@ -3,6 +3,4 @@
 out/*
 deps/*
 build/*
-boost/*
-proxygen/*
-pqxx/*
+test/shunit2/*
