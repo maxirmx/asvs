@@ -40,6 +40,8 @@ class DbInMemory
 public:
 	void loadDb(void);
 
+    static std::unique_ptr<DbInMemory> d;
+
 	std::unordered_map<std::string, std::shared_ptr<spCustomerInfo>> cuMap;
 	std::unordered_map<std::string, std::shared_ptr<spCustomerIpInfo>> cuIpMap;
 	std::unordered_map<std::string, std::shared_ptr<spAccountInfo>> acMap;
@@ -72,4 +74,4 @@ void DbInMemory::loadDb(void)
 	LOG(INFO) << "Loaded " << r.size() << " records from sp_tn.";
 }
 
-
+std::unique_ptr<DbInMemory> DbInMemory::d;

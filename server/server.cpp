@@ -39,8 +39,7 @@ int main(int argc, char* argv[])
       LOG(INFO) << DbConnection::d->describe();
 //      unique_ptr<DbInMemory> m = make_unique<DbInMemory>();
 //      m.loadDb();
-      auto api = StirShakenAPI::getAPI();
-      api.initialize();
+      StirShakenAPI::api->initialize();
 
    }
   catch (const StirShakenException& e)
