@@ -22,7 +22,6 @@ SET(V_PQXX 6.4.5)				# HASH 86921fdb0fe54495a79d5af2c96f2c771098c31e9b352d083423
 SET(V_JWT 1.13.1)				# HASH 4df55ac89c6692adaf3badb43daf3241fd876612c9ab627e250dfc4bb59993d9
 SET(V_JANSSON 2.14)				# HASH 5798d010e41cf8d76b66236cfb2f2543c8d082181d16bc3085ab49538d4b9929
 SET(V_KS 1.8.0)
-#SET(V_OPENSSL 1.1.1k)
 
 execute_process( COMMAND "awk" "-F=" "/^NAME/{print $2}" "/etc/os-release"
 				 RESULT_VARIABLE OSTYPE_RES OUTPUT_VARIABLE OSTYPE_TXT )
@@ -93,18 +92,6 @@ ExternalProject_Add(ks-prj
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/ks-src make install
 )
 
-#ExternalProject_Add(openssl-prj
-#	PREFIX ${DEPS}
-#	URL https://ftp.openssl.org/source/openssl-${V_OPENSSL}.tar.gz
-#	URL_HASH SHA256=892a0875b9872acd04a9fde79b1f943075d5ea162415de3047c327df33fbaee5 
-#	SOURCE_DIR ${DEPS}/src/openssl-src
-#	DOWNLOAD_NO_PROGRESS true
-#	UPDATE_COMMAND ""
-#	CONFIGURE_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/openssl-src ./config --prefix=${DEPS} --libdir=lib --openssldir=${DEPS}/ssl zlib-dynamic
-#	BUILD_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/openssl-src make
-#	INSTALL_COMMAND ${CMAKE_COMMAND} -E chdir ${DEPS}/src/openssl-src make install
-#)
-
 set(KS_LIBS "-L/home/maxirmx/Projects/asvs/deps/lib -l:libks.a -luuid")
 
 ExternalProject_Add(stirshaken-prj
@@ -139,12 +126,6 @@ ExternalProject_Add(pqxx-prj
 )
 
 add_subdirectory ("server")
-
-#if(NOT ${IS_UBUNTU})
-#	add_dependencies(proxygen-prj openssl-prj)
-#	add_dependencies(jwt-prj openssl-prj)
-#	add_dependencies(ks-prj openssl-prj)
-#endif(NOT ${IS_UBUNTU})
 
 add_dependencies(jwt-prj jansson-prj)
 add_dependencies(stirshaken-prj ks-prj jwt-prj)

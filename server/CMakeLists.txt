@@ -100,8 +100,6 @@ if(${IS_UBUNTU})
         add_external_library(pqxx)
 else(${IS_UBUNTU})
         add_external_library_64(pqxx)
-#        add_external_library(ssl)
-#        add_external_library(crypto)
 endif(${IS_UBUNTU})
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
