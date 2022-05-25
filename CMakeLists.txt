@@ -14,7 +14,7 @@ set(DEPS_LIB_DIR ${DEPS}/lib)
 set(DEPS_LIB_DIR_64 ${DEPS}/lib64)
 set(DEPS_BIN_DIR ${DEPS}/bin)
 set(DEPS_SBIN_DIR ${DEPS}/sbin)
-set(DEPS_PKG_DIR ${DEPS_LIB_DIR}/pkgconfig:${DEPS_LIB_DIR_64}/pkgconfig)
+set(DEPS_PKG_DIR ${DEPS_LIB_DIR}/pkgconfig:${DEPS_LIB_DIR_64}/pkgconfig:/usr/local/lib64/pkgconfig)
 
 SET(V_PROXYGEN 2020.11.16.00)	# HASH be617ce7ff8af12ab2008e5f49c2b0375b22919591cbae751c149d5de4c88200
 # V_PQXX 7.7.3  				# HASH 11e147bbe2d3024d68d29b38eab5d75899dbb6131e421a2dbf9f88bac9bf4b0d
