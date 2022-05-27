@@ -83,6 +83,17 @@ EOM
       { 
          "sp_customer_ip_uuid":"8cf1d751-2024-0002-bc7a-e61e08e3869b",  
          "sp_customer_uuid": "$c_uuid", 
+         "customer_ip":"::1" , 
+         "orig_id": "0001" , 
+         "tech_prefix": "0001" , 
+         "att_level_wo_sp_ani" : "A"      
+      }   
+EOM
+
+   ! IFS= read -r -d '' data203 << EOM
+      { 
+         "sp_customer_ip_uuid":"8cf1d751-2024-0003-bc7a-e61e08e3869b",  
+         "sp_customer_uuid": "$c_uuid", 
          "customer_ip":"$c_ip" , 
          "orig_id": "0002" , 
          "tech_prefix": "0002" , 
@@ -92,6 +103,7 @@ EOM
 
    curl -s --header "Content-Type: application/json" --data "$data201"  http://localhost:8080/api/customer_ip_create
    curl -s --header "Content-Type: application/json" --data "$data202"  http://localhost:8080/api/customer_ip_create
+   curl -s --header "Content-Type: application/json" --data "$data203"  http://localhost:8080/api/customer_ip_create
 
 }
 
