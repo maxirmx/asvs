@@ -15,7 +15,6 @@ string spBaseObject::__insert(void)
 
     pqxx::result r = DbConnection::d->exec(statement);
     __rmpIUS(r[0]);
-
     return __srsIUS();
 }
 

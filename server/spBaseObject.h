@@ -20,7 +20,6 @@ public:
         auto search = fields.find(k);
         if (search != fields.end()) *fields[k] = v;
         else                        fields.insert({ k, std::make_shared<Ti>(v) });
-
     };
 
     template<typename Ti, typename Tr>
@@ -37,14 +36,15 @@ public:
         if (!f.is_null()) __crt_p<Ti, Tr>(key, f.as<Tr>());
     };
 
+    virtual std::string& getKey() {  return fields[__getMKE()]->getStringVal(); }
 protected:
     virtual void __rmpINT(const std::string& body);
     virtual void __rmpIUS(const pqxx::row& r);
     virtual std::string __crtIUS(const std::string& eqs, bool with_uuid);
     virtual std::string __srsIUS(void);
 
-    virtual const std::string& __getNME(void) { return tbl_name; }
     virtual const std::string& __getMKE(void) { return master_key; }
+    virtual const std::string& __getNME(void) { return tbl_name; }
 
     virtual void   __chkUUID(void) { if (fields.find(__getMKE()) == fields.end()) throw (AsVsException("Cannot identify record since '" + __getMKE() + "' parameter is missing.")); }
 
@@ -53,5 +53,4 @@ protected:
     std::unordered_map<std::string, std::shared_ptr<spBaseColumn>> fields;
     std::unordered_map<std::string, fptr_pt> proto_fields_pt;
     std::unordered_map<std::string, fptr_pq> proto_fields_pq;
-
 };

@@ -66,6 +66,8 @@ add_executable (${PROJECT_NAME}
                 "Util.h"
                 "DbConnection.h"
                 "DbConnection.cpp"
+                "DbInMemory.h"
+                "DbInMemory.cpp"
                 "spColumn.h"
                 "spBaseObject.h"
                 "spBaseObject.cpp"

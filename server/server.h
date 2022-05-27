@@ -35,4 +35,4 @@
 #include "spColumn.h"
 #include "spBaseObject.h"
 #include "spDataObject.h"
-
+#include "DbInMemory.h"

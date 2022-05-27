@@ -12,6 +12,7 @@ public:
 
 private:
     void logError(uint16_t code, const string& msg);
+    void sendMessage(uint16_t code, const string& msg);
 
     string customerCreate     (const string& body);
     string customerUpdate     (const string& body);
@@ -25,13 +26,9 @@ private:
     string gwIpCreate         (const string& body);
     string gwIpUpdate         (const string& body);
     string gwIpDelete         (const string& body);
-    string certCreate         (const string& body);
-    string certUpdate         (const string& body);
-    string certDelete         (const string& body);
     string tnCreate           (const string& body);
     string tnUpdate           (const string& body);
     string tnDelete           (const string& body);
-
 
     unique_ptr<HTTPMessage> message;
     bool waiting_post;

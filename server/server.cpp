@@ -37,8 +37,8 @@ int main(int argc, char* argv[])
   {
       DbConnection::d = make_unique<DbConnection>(FLAGS_postgres);
       LOG(INFO) << DbConnection::d->describe();
-//      unique_ptr<DbInMemory> m = make_unique<DbInMemory>();
-//      m.loadDb();
+      DbInMemory::d = make_unique<DbInMemory>();
+      DbInMemory::d->loadDb();
       StirShakenAPI::api->initialize();
 
    }

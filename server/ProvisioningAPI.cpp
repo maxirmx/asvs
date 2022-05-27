@@ -6,7 +6,6 @@ using namespace proxygen;
 
 #include "ProvisioningAPI.h"
 
-
 void ProvApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
 {
     try
@@ -17,9 +16,10 @@ void ProvApiHandler::onRequest(std::unique_ptr<HTTPMessage> req) noexcept
 
         if (path == "/api/stop") 
         {
-            logError(200, "Stop receieved, exiting.");
+            string msg = "Stop receieved, exiting.";
+            LOG(INFO) << msg << std::endl;
+            sendMessage(200, msg);
             raise(SIGTERM);
-
         }
         else 
         {
@@ -86,10 +86,7 @@ void ProvApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
     {
         logError(500, e.what());
     }
-
-
 }
-
 
 void ProvApiHandler::onEOM() noexcept
 {
@@ -116,10 +113,8 @@ void ProvApiHandler::onError(ProxygenError /*err*/) noexcept
     delete this;
 }
 
-void ProvApiHandler::logError(uint16_t code, const string& msg)
+void ProvApiHandler::sendMessage(uint16_t code, const string& msg)
 {
-    LOG(ERROR) << msg << std::endl;
-
     boost::property_tree::ptree resJson;
     resJson.put("Message", msg);
     stringstream ss;
@@ -128,94 +123,125 @@ void ProvApiHandler::logError(uint16_t code, const string& msg)
         .status(code, HTTPMessage::getDefaultReason(code))
         .body(ss.str())
         .send();
+
 }
 
+void ProvApiHandler::logError(uint16_t code, const string& msg)
+{
+    LOG(ERROR) << msg << std::endl;
+    sendMessage(code, msg);
+}
 
 string ProvApiHandler::customerCreate(const string& body)
 {
-    spCustomerInfo spCInfo(body);
-    return spCInfo.__insert();
+    auto spCInfo = make_shared<spCustomerInfo>(body);
+    string r = spCInfo->__insert();
+    DbInMemory::d->cuMap[spCInfo->getKey()] = spCInfo;
+    return r;
 }
 
 string ProvApiHandler::customerUpdate(const string& body)
 {
-    spCustomerInfo spCInfo(body);
-    return spCInfo.__update();
+    auto spCInfo = make_shared<spCustomerInfo>(body);
+    string r = spCInfo->__update();
+    DbInMemory::d->cuMap[spCInfo->getKey()] = spCInfo;
+    return r;
 }
 
 string ProvApiHandler::customerDelete(const string& body)
 {
     spCustomerInfo spCInfo(body);
+    DbInMemory::d->cuMap.erase(spCInfo.getKey());
     return spCInfo.__delete();
 }
 string ProvApiHandler::customerIpCreate(const string& body)
 {
-    spCustomerIpInfo spIpInfo(body);
-    return spIpInfo.__insert();
+    auto spIpInfo = make_shared<spCustomerIpInfo>(body);
+    string r = spIpInfo->__insert();
+    DbInMemory::d->cuIpMap[spIpInfo->getKey()] = spIpInfo;
+    return r;
 }
 
 string ProvApiHandler::customerIpUpdate(const string& body)
 {
-    spCustomerIpInfo spIpInfo(body);
-    return spIpInfo.__update();
+    auto spIpInfo = make_shared<spCustomerIpInfo>(body);
+    string r = spIpInfo->__update();
+    DbInMemory::d->cuIpMap[spIpInfo->getKey()] = spIpInfo;
+    return r;
 }
 
 string ProvApiHandler::customerIpDelete(const string& body)
 {
     spCustomerIpInfo spIpInfo(body);
+    DbInMemory::d->cuIpMap.erase(spIpInfo.getKey());
     return spIpInfo.__delete();
 }
 
 string ProvApiHandler::accountCreate(const string& body)
 {
-    spAccountInfo spAccInfo(body);
-    return spAccInfo.__insert();
+    auto spAccInfo = make_shared<spAccountInfo>(body);
+    string r = spAccInfo->__insert();
+    DbInMemory::d->acMap[spAccInfo->getKey()] = spAccInfo;
+    return r;
 }
 
 string ProvApiHandler::accountUpdate(const string& body)
 {
-    spAccountInfo spAccInfo(body);
-    return spAccInfo.__update();
+    auto spAccInfo = make_shared<spAccountInfo>(body);
+    string r = spAccInfo->__update();
+    DbInMemory::d->acMap[spAccInfo->getKey()] = spAccInfo;
+    return r;
 }
 
 string ProvApiHandler::accountDelete(const string& body)
 {
     spAccountInfo spAccInfo(body);
+    DbInMemory::d->acMap.erase(spAccInfo.getKey());
     return spAccInfo.__delete();
 }
 
 string ProvApiHandler::gwIpCreate(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body);
-    return spIpInfo.__insert();
+    auto spIpInfo = make_shared<spGatewayIpInfo>(body);
+    string r = spIpInfo->__insert();
+    DbInMemory::d->gwIpMap[spIpInfo->getKey()] = spIpInfo;
+    return r;
 }
 
 string ProvApiHandler::gwIpUpdate(const string& body)
 {
-    spGatewayIpInfo spIpInfo(body);
-    return spIpInfo.__update();
+    auto spIpInfo = make_shared<spGatewayIpInfo>(body);
+    string r = spIpInfo->__update();
+    DbInMemory::d->gwIpMap[spIpInfo->getKey()] = spIpInfo;
+    return r;
 }
 
 string ProvApiHandler::gwIpDelete(const string& body)
 {
     spGatewayIpInfo spIpInfo(body);
+    DbInMemory::d->gwIpMap.erase(spIpInfo.getKey());
     return spIpInfo.__delete();
 }
 
 string ProvApiHandler::tnCreate(const string& body)
 {
-    spTnInfo spTInfo(body);
-    return spTInfo.__insert();
+    auto spTInfo = make_shared<spTnInfo>(body);
+    string r = spTInfo->__insert();
+    DbInMemory::d->tnMap[spTInfo->getKey()] = spTInfo;
+    return r;
 }
 
 string ProvApiHandler::tnUpdate(const string& body)
 {
-    spTnInfo spTInfo(body);
-    return spTInfo.__update();
+    auto spTInfo = make_shared<spTnInfo>(body);
+    string r = spTInfo->__update();
+    DbInMemory::d->tnMap[spTInfo->getKey()] = spTInfo;
+    return r;
 }
 
 string ProvApiHandler::tnDelete(const string& body)
 {
     spTnInfo spTInfo(body);
+    DbInMemory::d->tnMap.erase(spTInfo.getKey());
     return spTInfo.__delete();
 }
