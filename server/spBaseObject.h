@@ -36,6 +36,7 @@ public:
         if (!f.is_null()) __crt_p<Ti, Tr>(key, f.as<Tr>());
     };
 
+    virtual std::shared_ptr<spBaseColumn> find(const std::string& k) { return fields[k]; }
     virtual std::string& getKey() {  return fields[__getMKE()]->getStringVal(); }
 protected:
     virtual void __rmpINT(const std::string& body);

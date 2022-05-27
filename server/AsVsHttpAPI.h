@@ -1,3 +1,16 @@
+class SigningException: public AsVsException {
+public:
+    explicit SigningException(uint16_t _AsVsCode, const std::string& message, const std::string& _p1 = "", const std::string& _p2 = "") : 
+                    AsVsException(message), AsVsCode(_AsVsCode), p1(_p1), p2(_p2) {  }
+    uint16_t getCode(void) const noexcept { return AsVsCode; }
+    const char* getp1(void) const noexcept { return p1.c_str(); }
+    const char* getp2(void) const noexcept { return p2.c_str(); }
+protected:
+    uint16_t AsVsCode;
+    std::string p1;
+    std::string p2;
+};
+
 class AsVsApiHandler : public RequestHandler
 {
 public:
@@ -25,7 +38,7 @@ private:
     void yeildResponse(const std::string& r);
     void yeildError(uint16_t AsVsCode, const std::string& msg, const std::string& p1 = "", const std::string& p2 = "");
 
-    const std::string signing(const std::string& body);
+    const std::string signing(const std::string& clientIp, const std::string& body);
     const std::string verify(const std::string& body);
 
     std::unique_ptr<HTTPMessage> message;
@@ -44,5 +57,4 @@ public:
     void onServerStop() noexcept override {   }
 
     RequestHandler* onRequest(RequestHandler*, HTTPMessage*) noexcept override { return new AsVsApiHandler(); }
-
 };

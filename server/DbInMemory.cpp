@@ -2,6 +2,8 @@
 
 using namespace std;
 
+std::unique_ptr<DbInMemory> DbInMemory::d;
+
 void DbInMemory::loadDb(void)
 {
 	pqxx::result r = DbConnection::d->exec("SELECT * FROM sp_customers");
@@ -40,4 +42,11 @@ void DbInMemory::loadDb(void)
 	LOG(INFO) << "Loaded " << r.size() << " records from sp_tn.";
 }
 
-std::unique_ptr<DbInMemory> DbInMemory::d;
+std::shared_ptr<spCustomerIpInfo> DbInMemory::findCustomerIpInfo(const std::string& ip) {
+    for(auto iter = cuIpMap.begin(); iter != cuIpMap.end(); ++iter){
+        if (iter->second->find("customer_ip")->getStringVal() == ip) return iter->second; 
+    	LOG(INFO) << "Lookup: " << iter->second->find("customer_ip")->getStringVal() << " vs " << ip;
+    }
+	LOG(INFO) << "Returning nullptr.";
+    return nullptr;
+}

@@ -96,7 +96,7 @@ void AsVsApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
             switch (op)
             {
             case AsVsSigning:
-                yeildResponse(signing(post_body));
+                yeildResponse(signing(client_ip, post_body));
                 break;
             case AsVsVerify:
                 yeildResponse(verify(post_body));
@@ -108,6 +108,11 @@ void AsVsApiHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept
             }
         }
     }
+    catch (const SigningException& e)
+    {
+        yeildError(e.getCode(), e.what(), e.getp1(), e.getp2());
+    }
+
     catch (const std::exception& e)
     {
         yeildError(5000, e.what());
@@ -170,31 +175,30 @@ void AsVsApiHandler::yeildError(uint16_t AsVsCode, const string& msg, const stri
  "    {\n"
  "        \"messageId\": \"" << AsVsCode2AsVsId(AsVsCode) << "\",\n"
  "        \"text\": \"" << AsVsCode2AsVsText(AsVsCode) << "\", \n"
- "        \"variables\": [ " << (p1 == "" ? "" : "\"" + p1 + "\"" + (p2 == "" ? "" : " , ")) + (p2 == "" ? "" : " , ") << " ]\n"
+ "        \"variables\": [ " << (p1 == "" ? "" : "\"" + p1 + "\"" + (p2 == "" ? "" : " , \"" + p2 + "\"")) << " ]\n"
  "    }\n"
  "  }\n"
  "}\n";
 
- string x = ss.str();
     ResponseBuilder(downstream_)
         .status(HttpCode, HTTPMessage::getDefaultReason(HttpCode))
         .header("Content-Type", "application/json")
         .header("X-RequestID", XRequestID)
-        .body(x)
+        .body(ss.str())
         .send();
 }
 
-const string AsVsApiHandler::signing(const string& body)
+const string AsVsApiHandler::signing(const string& clientIp, const string& body)
 {
-    
-    return "{ \"msg\": \"Thank you for the fish\"}";
+    auto customerIpInfo = DbInMemory::d->findCustomerIpInfo(clientIp);
+    if (customerIpInfo == nullptr) throw(SigningException(4005, std::string("could not find a customer for ip address ") + clientIp, clientIp, "could not find a customer for ip address"));
+    return "{ \"msg\": \"Thank you for the fish\"}\n";
 }
 
 const string AsVsApiHandler::verify(const string& body)
 {
-    return "{ \"msg\": \"Oh, My Godness !\"}";
+    return "{ \"msg\": \"Oh, My Godness !\"}\n";
 }
-
 
 uint16_t AsVsApiHandler::AsVsCode2HttpCode(uint16_t AsVsCode)
 {
@@ -349,4 +353,3 @@ const string AsVsApiHandler::AsVsCode2AsVsExceptionKey(uint16_t AsVsCode)
     return AsVsExceptionKey;
 
 }
-

@@ -19,7 +19,6 @@ class spCustomerIpInfo: public spBaseObject
 public:
     spCustomerIpInfo(const std::string& body);
     spCustomerIpInfo(const pqxx::row& r);
-
 private:
     void __proto(void);
 };
