@@ -45,6 +45,11 @@ else (${IS_UBUNTU})
         find_library(PQ         pq      REQUIRED        HINTS /usr/pgsql-10/lib)
 endif(${IS_UBUNTU})
 
+if(${IS_UBUNTU})
+        find_library(SSL                ssl                             REQUIRED )
+        find_library(CRYPTO             crypto                          REQUIRED )
+endif(${IS_UBUNTU})
+
 set(LIBS
         ${Boost_LIBRARIES}
 # ---
@@ -102,6 +107,8 @@ if(${IS_UBUNTU})
         add_external_library(pqxx)
 else(${IS_UBUNTU})
         add_external_library_64(pqxx)
+        add_external_library(ssl)
+        add_external_library(crypto)
 endif(${IS_UBUNTU})
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
